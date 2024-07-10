@@ -1,7 +1,7 @@
 ---
 name: "\U0001F31F [Feature] \U0001F31F"
 about: 기능에 대해 작성해주세요.
-title: ''
+title: '🌟 [Feature] '
 labels: "\U0001F31F feature \U0001F31F"
 assignees: ''
 
