@@ -33,7 +33,7 @@ public class Card {
   private String content;
 
   @Column
-  private Date dueDate;
+  private String dueDate;
 
   @Column
   private String manager;
