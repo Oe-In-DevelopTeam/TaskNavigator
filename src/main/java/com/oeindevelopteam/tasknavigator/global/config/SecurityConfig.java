@@ -79,8 +79,8 @@ public class SecurityConfig {
         .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             .requestMatchers("/api/users/signup", "/api/users/token/refresh").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/users/**", "/api/admin/**").permitAll()
-            .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+            .requestMatchers("/api/admin/**").hasAuthority("MANAGER")
             .anyRequest().authenticated())
         .exceptionHandling((exceptionHandling) -> {
           exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint);

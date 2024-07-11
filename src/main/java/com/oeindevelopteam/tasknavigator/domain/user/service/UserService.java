@@ -32,7 +32,10 @@ public class UserService {
       throw new CustomException(ErrorCode.FAIL);
     });
 
-    UserRole userRole = userRoleRepository.findByRole("USER")
+    boolean isFirstUser = userRepository.count() == 0;
+    String roleName = isFirstUser ? "MANAGER" : "USER";
+
+    UserRole userRole = userRoleRepository.findByRole(roleName)
         .orElseThrow(() -> new CustomException(ErrorCode.FAIL));
 
     User user = new User(requestDto, userRole);

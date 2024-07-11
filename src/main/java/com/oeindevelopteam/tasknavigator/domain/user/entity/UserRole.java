@@ -9,10 +9,11 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class UserRole {
 
   @Id
@@ -22,8 +23,12 @@ public class UserRole {
   @Column
   private String role;
 
-  @OneToMany(mappedBy = "userRoleId")
+  @OneToMany(mappedBy = "userRole")
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
+
+  public UserRole(String role) {
+    this.role = role;
+  }
 
   public void addRole (String roleName) {
     this.role = roleName;
