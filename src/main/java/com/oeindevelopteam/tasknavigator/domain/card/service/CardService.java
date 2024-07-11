@@ -4,6 +4,8 @@ import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.card.entity.Card;
 import com.oeindevelopteam.tasknavigator.domain.card.repository.CardRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +25,13 @@ public class CardService {
     cardRepository.save(card);
 
     return new CardResponseDto(card);
+  }
+
+  public List<CardResponseDto> getAllCards() {
+    List<Card> cards = cardRepository.findAll();
+
+    return cards.stream()
+        .map(card -> new CardResponseDto(card))
+        .collect(Collectors.toList());
   }
 }
