@@ -13,7 +13,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class UserRole {
 
   @Id
@@ -26,4 +25,7 @@ public class UserRole {
   @OneToMany(mappedBy = "userRoleId")
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
 
+  public void addRole (String roleName) {
+    this.role = roleName;
+  }
 }

@@ -22,7 +22,7 @@ public class UserRoleInitializer {
   public void addRoleIfNotExists(UserRoleRepository userRoleRepository, String roleName) {
     userRoleRepository.findByRole(roleName).orElseGet(() -> {
       UserRole role = new UserRole();
-      role.setRole(roleName);
+      role.addRole(roleName);
       return userRoleRepository.save(role);
     });
   }
