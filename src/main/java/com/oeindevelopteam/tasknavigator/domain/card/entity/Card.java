@@ -2,6 +2,16 @@ package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
+import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "cards")
 @NoArgsConstructor
-public class Card {
+public class Card extends Timestamped {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +43,9 @@ public class Card {
 
   @Column
   private String manager;
+
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<CardTagMatches> tagMatches;
 
   @ManyToOne
   @JoinColumn(name = "'column'")
@@ -60,5 +73,9 @@ public class Card {
     if (cardRequestDto.getManager() != null) {
       this.manager = cardRequestDto.getManager();
     }
+  }
+
+  public void setTagMatches(Set<CardTagMatches> tagMatches) {
+    this.tagMatches = tagMatches;
   }
 }

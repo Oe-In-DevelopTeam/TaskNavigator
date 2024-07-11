@@ -1,6 +1,8 @@
 package com.oeindevelopteam.tasknavigator.domain.card.dto;
 
 import com.oeindevelopteam.tasknavigator.domain.card.entity.Card;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
@@ -13,6 +15,7 @@ public class CardResponseDto {
   private String content;
   private String dueDate;
   private String manager;
+  private Set<String> tagMatches;
 
   public CardResponseDto(Card card) {
     this.cardId = card.getId();
@@ -22,5 +25,8 @@ public class CardResponseDto {
     this.content = card.getContent();
     this.dueDate = card.getDueDate();
     this.manager = card.getManager();
+    this.tagMatches = card.getTagMatches().stream()
+        .map(cardTagMatch -> cardTagMatch.getTag().getName())
+        .collect(Collectors.toSet());
   }
 }
