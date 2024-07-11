@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class CardService {
   private final CardRepository cardRepository;
   private final CardTagRepository cardTagRepository;
 
+  @Transactional
   public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long columnId) {
 
     // TODO: 유저아이디 넣어주는거 필요
@@ -59,6 +61,7 @@ public class CardService {
         .collect(Collectors.toList());
   }
 
+  @Transactional
   public CardResponseDto editCardContent(CardRequestDto cardRequestDto, Long cardId) {
     // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
     // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
@@ -72,6 +75,7 @@ public class CardService {
     return new CardResponseDto(card);
   }
 
+  @Transactional
   public void deleteCard(Long cardId) {
     // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
     // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
