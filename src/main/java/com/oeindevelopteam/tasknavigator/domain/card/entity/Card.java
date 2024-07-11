@@ -1,12 +1,8 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,6 +33,10 @@ public class Card {
 
   @Column
   private String manager;
+
+  @ManyToOne
+  @JoinColumn(name = "'column'")
+  private com.oeindevelopteam.tasknavigator.domain.column.entity.Column column;
 
   public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
     this.userId = userId;
