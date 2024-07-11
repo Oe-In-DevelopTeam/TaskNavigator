@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,16 @@ public class CardController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 수정에 성공하였습니다.", responseDto));
+  }
+
+  @DeleteMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
+  public ResponseEntity<CommonResponseDto> deleteCard(@PathVariable Long boardId,
+      @PathVariable Long columnId, @PathVariable Long cardId) {
+
+    cardService.deleteCard(cardId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CommonResponseDto(200, "카드 삭제에 성공하였습니다.", null));
   }
 
 }
