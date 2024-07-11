@@ -65,4 +65,9 @@ public class CardService {
         .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
   }
 
+  public CardResponseDto getCardDetail(Long cardId) {
+    Card card = findCardById(cardId);
+
+    return new CardResponseDto(card);
+  }
 }
