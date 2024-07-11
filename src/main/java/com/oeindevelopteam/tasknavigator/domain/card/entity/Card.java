@@ -1,32 +1,32 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @Table(name = "cards")
+@NoArgsConstructor
 public class Card {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private Long userId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private Long columnId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String title;
 
   @Column
@@ -37,4 +37,14 @@ public class Card {
 
   @Column
   private String manager;
+
+  public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
+    this.userId = userId;
+    this.columnId = columnId;
+    this.title = cardRequestDto.getTitle();
+    this.content = cardRequestDto.getContent();
+    this.dueDate = cardRequestDto.getDueDate();
+    this.manager = cardRequestDto.getManager();
+  }
+
 }
