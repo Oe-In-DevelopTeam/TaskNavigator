@@ -1,6 +1,7 @@
 package com.oeindevelopteam.tasknavigator.domain.card.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import java.util.Set;
 import lombok.Getter;
 
 @Getter
@@ -11,4 +12,5 @@ public class CardRequestDto {
   private String content;
   private String dueDate;
   private String manager;
+  private Set<String> tags;
 }
