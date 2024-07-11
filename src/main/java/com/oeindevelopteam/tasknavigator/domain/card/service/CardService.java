@@ -41,8 +41,7 @@ public class CardService {
     // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
     // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
 
-    Card card = cardRepository.findById(cardId)
-        .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
+    Card card = findCardById(cardId);
 
     card.editCard(cardRequestDto);
 
@@ -50,4 +49,20 @@ public class CardService {
 
     return new CardResponseDto(card);
   }
+
+  public void deleteCard(Long cardId) {
+    // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
+    // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
+
+    Card card = findCardById(cardId);
+
+    cardRepository.delete(card);
+  }
+
+
+  public Card findCardById(Long cardId) {
+    return cardRepository.findById(cardId)
+        .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
+  }
+
 }
