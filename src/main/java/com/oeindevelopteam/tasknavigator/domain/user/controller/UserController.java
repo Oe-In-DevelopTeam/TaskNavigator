@@ -22,11 +22,19 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<CommonResponseDto> signup(@Valid @RequestBody UserSignupRequestDto requestDto) {
+  public ResponseEntity<CommonResponseDto> signup(
+      @Valid @RequestBody UserSignupRequestDto requestDto) {
     userService.signup(requestDto);
     CommonResponseDto responseDto = new CommonResponseDto<>(201, "회원가입에 성공했습니다.", null);
 
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<CommonResponseDto> logout() {
+    userService.logout();
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
 }

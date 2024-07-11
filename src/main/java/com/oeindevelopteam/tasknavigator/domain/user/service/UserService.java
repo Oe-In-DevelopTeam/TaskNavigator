@@ -5,8 +5,10 @@ import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRole;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleRepository;
+import com.oeindevelopteam.tasknavigator.domain.user.security.UserDetailsImpl;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
 import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,7 @@ public class UserService {
   public void signup(UserSignupRequestDto requestDto) {
 
     userRepository.findByUserId(requestDto.getUserId()).ifPresent((val) -> {
-      throw new CustomException(ErrorCode.FAIL);
+      throw new CustomException(ErrorCode.BAD_REQUEST);
     });
 
     // TODO : role 부여 설정
@@ -37,7 +39,7 @@ public class UserService {
     String roleName = isFirstUser ? "MANAGER" : "USER";
 
     UserRole userRole = userRoleRepository.findByRole(roleName)
-        .orElseThrow(() -> new CustomException(ErrorCode.FAIL));
+        .orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND));
 
     User user = new User(requestDto, userRole);
 
@@ -45,6 +47,21 @@ public class UserService {
     user.encrytionPassword(encryptionPassword);
 
     userRepository.save(user);
+  }
+
+  @Transactional
+  public void logout() {
+
+    User user = getUser();
+    user.updateRefreshToken(null);
+
+  }
+
+  public User getUser() {
+    UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal();
+    return userRepository.findByUserId(userDetails.getUsername())
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
   }
 
 }
