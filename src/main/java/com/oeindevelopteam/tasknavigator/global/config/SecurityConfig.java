@@ -77,11 +77,12 @@ public class SecurityConfig {
     http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            .requestMatchers("/api/users/signup", "/api/users/token/refresh").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
-            .requestMatchers("/api/admin/**").hasAuthority("MANAGER")
-            .anyRequest().authenticated())
+//            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+//            .requestMatchers("/api/users/signup", "/api/users/token/refresh").permitAll()
+//            .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+//            .requestMatchers("/api/admin/**").hasAuthority("MANAGER")
+//            .anyRequest().authenticated())
+            .anyRequest().permitAll()) // 모든 요청에 접근 허용, 개발 완료 후 수정 예정
         .exceptionHandling((exceptionHandling) -> {
           exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint);
         })
