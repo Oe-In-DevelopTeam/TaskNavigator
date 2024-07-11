@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Navigator Card Details Page</title>
+  <link rel="stylesheet" href="../static/edit-card.css">
+  <link rel="stylesheet" href="../static/nav.css">
+  <link rel="stylesheet" href="../static/global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<nav>
+  <div class="nav-container">
+    <a href="index.html">Task Navigator</a>
+  </div>
+  <div class="nav-container nav-right">
+    <span id="navUsername">Username</span>
+    <button>LOG OUT</button>
+  </div>
+</nav>
+
+<div class="card-container">
+  <input type="text" class="card-title" placeholder="Write Card Title">
+  <input type="date" class="card-deadline">
+  <div class="card-status-container">
+    <div>
+      <input type="checkbox" id="card-status-feature" name="feature">
+      <label for="card-status-feature">Feature</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-bug" name="bug">
+      <label for="card-status-bug">Bug</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-improvement" name="improvement">
+      <label for="card-status-improvement">Improvement</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-refactor" name="refactor">
+      <label for="card-status-refactor">Refactor</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-research" name="research">
+      <label for="card-status-research">Research</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-documentation" name="documentation">
+      <label for="card-status-documentation">Documentation</label>
+    </div>
+    <div>
+      <input type="checkbox" id="card-status-testing" name="testing">
+      <label for="card-status-testing">Testing</label>
+    </div>
+  </div>
+  <textarea cols="50" rows="35"></textarea>
+  <button><i class="fa-solid fa-check"></i></button>
+</div>
+
+<script src="../static/index.js"></script>
+<script src="../static/create-board.js"></script>
+
+</body>
+</html>
