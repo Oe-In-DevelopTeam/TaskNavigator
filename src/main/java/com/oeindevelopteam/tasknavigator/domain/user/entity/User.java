@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.user.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.board.entity.UserBoardMatches;
 import com.oeindevelopteam.tasknavigator.domain.user.dto.UserSignupRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -37,6 +38,9 @@ public class User {
 
   @OneToMany(mappedBy = "userId")
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user")
+  private List<UserBoardMatches> userBoardMatchesList = new ArrayList<>();
 
   @ElementCollection
   private List<String> passwordList = new LinkedList<>();
