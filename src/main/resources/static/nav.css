@@ -1,0 +1,30 @@
+nav {
+  background: rgb(255,255,255);
+  background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(127,30,254,1) 0%, rgba(67,107,226,1) 51%, rgba(59,0,255,1) 100%);
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 30px;
+  font-size: 20px;
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  color: white;
+  z-index: 1;
+}
+
+.nav-right {
+  display: flex;
+  gap: 40px;
+}
+
+.nav-right > button {
+  border: none;
+  background-color: transparent;
+  color: white;
+  transition: all ease-in 0.2s;
+}
+
+.nav-right > button:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
