@@ -25,7 +25,7 @@ public class BoardService {
 
     }
 
-    public CommonResponseDto<List<Board>> getAllBoards(User user) {
+    public List<Board> getAllBoards(User user) {
 
         // userId 로 Board 권한 체크
         List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
@@ -44,17 +44,14 @@ public class BoardService {
         if (findAll){
 
             // 매니저 - 모든 Board 리스트 조회
-            boardList = userBoardMatchesRepository.findBoard();
+            return userBoardMatchesRepository.findBoard();
 
         } else {
 
             // User - 초대받은 Board 리스트 조회
-            boardList = userBoardMatchesRepository.findBoardByUserId(user.getId());
+            return userBoardMatchesRepository.findBoardByUserId(user.getId());
 
         }
-
-        // 리스트로 넘겨주기
-        return new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList);
 
     }
 

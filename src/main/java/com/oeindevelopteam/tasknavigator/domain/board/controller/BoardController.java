@@ -24,9 +24,9 @@ public class BoardController {
     @GetMapping("/boards")
     public ResponseEntity<CommonResponseDto<List<Board>>> getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        CommonResponseDto<List<Board>> boardList = boardService.getAllBoards(userDetails.getUser());
+        List<Board> boardList = boardService.getAllBoards(userDetails.getUser());
 
-        return ResponseEntity.status(HttpStatus.OK).body(boardList);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList));
 
     }
 

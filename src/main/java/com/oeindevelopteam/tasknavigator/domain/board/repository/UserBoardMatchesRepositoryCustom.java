@@ -7,7 +7,8 @@ import java.util.List;
 
 @Repository
 public interface UserBoardMatchesRepositoryCustom {
-    List<Board> findBoardByUserId(Long userId);
 
+    List<Board> findBoardByUserId(Long userId);
     List<Board> findBoard();
+
 }
