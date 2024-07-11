@@ -47,4 +47,18 @@ public class Card {
     this.manager = cardRequestDto.getManager();
   }
 
+  public void editCard(CardRequestDto cardRequestDto) {
+    if (cardRequestDto.getTitle() != null) {
+      this.title = cardRequestDto.getTitle();
+    }
+    if (cardRequestDto.getContent() != null) {
+      this.content = cardRequestDto.getContent();
+    }
+    if (cardRequestDto.getDueDate() != null) {
+      this.dueDate = cardRequestDto.getDueDate();
+    }
+    if (cardRequestDto.getManager() != null) {
+      this.manager = cardRequestDto.getManager();
+    }
+  }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +24,10 @@ public class CardController {
   @PostMapping("/boards/{boardId}/columns/{columnId}/cards")
   public ResponseEntity<CommonResponseDto> createCard(@PathVariable Long boardId,
       @PathVariable Long columnId, @RequestBody CardRequestDto cardRequestDto) {
-    CardResponseDto responseDto = cardService.createdCard(cardRequestDto, columnId);
+
     // TODO: AOP 사용해서 boardId, columnId 확인
+    CardResponseDto responseDto = cardService.createdCard(cardRequestDto, columnId);
+
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 생성에 성공하였습니다.", responseDto));
   }
@@ -36,6 +39,18 @@ public class CardController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "전체 카드 조회에 성공하였습니다.", responseDtos));
+  }
+
+  @PutMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
+  public ResponseEntity<CommonResponseDto> editCardContent(@PathVariable Long boardId,
+      @PathVariable Long columnId, @PathVariable Long cardId,
+      @RequestBody CardRequestDto cardRequestDto) {
+
+    // TODO: AOP 사용해서 boardId, columnId 확인
+    CardResponseDto responseDto = cardService.editCardContent(cardRequestDto, cardId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CommonResponseDto(200, "카드 수정에 성공하였습니다.", responseDto));
   }
 
 }
