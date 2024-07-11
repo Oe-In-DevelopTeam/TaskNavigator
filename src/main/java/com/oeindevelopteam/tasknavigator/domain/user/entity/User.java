@@ -45,6 +45,7 @@ public class User {
   public User(UserSignupRequestDto requestDto, UserRole userRole) {
     this.userId = requestDto.getUserId();
     this.password = requestDto.getPassword();
+    this.username = requestDto.getUsername();
     this.userRoleMatches.add(new UserRoleMatches(this, userRole));
   }
 
