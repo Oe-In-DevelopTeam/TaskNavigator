@@ -58,10 +58,22 @@ public class CardController {
   public ResponseEntity<CommonResponseDto> deleteCard(@PathVariable Long boardId,
       @PathVariable Long columnId, @PathVariable Long cardId) {
 
+    // TODO: 유저 본인이 작성한 카드인지 확인필요
     cardService.deleteCard(cardId);
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 삭제에 성공하였습니다.", null));
+  }
+
+  @GetMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
+  public ResponseEntity<CommonResponseDto> getCardDetail(@PathVariable Long boardId,
+      @PathVariable Long columnId, @PathVariable Long cardId) {
+
+    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
+    CardResponseDto responseDto = cardService.getCardDetail(cardId);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CommonResponseDto(200, "카드 조회에 성공하였습니다.", responseDto));
   }
 
 }
