@@ -32,6 +32,7 @@ public class UserService {
       throw new CustomException(ErrorCode.FAIL);
     });
 
+    // TODO : role 부여 설정
     boolean isFirstUser = userRepository.count() == 0;
     String roleName = isFirstUser ? "MANAGER" : "USER";
 
