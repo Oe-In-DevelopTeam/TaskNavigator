@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
 import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.CascadeType;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,6 +46,10 @@ public class Card extends Timestamped {
 
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<CardTagMatches> tagMatches;
+
+  @ManyToOne
+  @JoinColumn(name = "'column'")
+  private com.oeindevelopteam.tasknavigator.domain.column.entity.Column column;
 
   public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
     this.userId = userId;

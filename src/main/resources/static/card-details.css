@@ -1,0 +1,124 @@
+body {
+  font-family: "Roboto Mono", monospace;
+  display: flex;
+  gap: 50px;
+  flex-direction: column;
+  align-items: center;
+  background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 0%, rgba(30,46,102,1) 50%, rgba(10,7,31,1) 100%);
+  padding: 100px 0;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: rgb(255,255,255);
+  background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(127,30,254,1) 0%, rgba(208,67,226,1) 51%, rgba(59,0,255,1) 100%);
+  box-shadow: 25px 25px 10px rgba(0, 0, 0, 0.5);
+  background-color: #98b3e3;
+  border: none;
+  border-radius: 10px;
+  padding: 50px 30px;
+  color: white;
+  font-family: "Roboto Mono", monospace;
+  max-width: 1200px;
+}
+
+.card-container .card-container-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-container .card-title {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+  font-family: "Roboto Mono", monospace;
+}
+
+.card-container-top .card-icons {
+  display: flex;
+  gap: 20px;
+  opacity: 0.5;
+  transition: all ease-in 0.5s;
+}
+
+.card-icons #edit-card-icon:hover {
+}
+
+.card-container .card-info {
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.5;
+}
+
+.card-info #card-writer {
+  margin-right: 20px;
+}
+
+.card-container .card-content {
+  margin: 30px 0;
+}
+
+.card-tags-container {
+  display: flex;
+  gap: 25px;
+  color: #180429;
+  opacity: 0.8;
+}
+
+.comment-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.comment-container .comment {
+  background: rgb(39,26,113);
+  background: linear-gradient(333deg, rgba(39,26,113,1) 0%, rgba(61,36,112,1) 50%, rgba(39,5,51,1) 100%);
+  box-shadow: 15px 15px 10px rgba(0, 0, 0, 0.5);
+  color: #d8aefc;
+  border-radius: 10px;
+  padding: 10px;
+  border-bottom-right-radius: 0px;
+}
+
+.send-comment-container {
+  position: fixed;
+  bottom: 30px;
+  width: 1000px;
+  display: flex;
+  gap: 20px;
+}
+
+.send-comment-container > input {
+  height: 50px;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  font-size: 20px;
+  color: white;
+  font-family: "Roboto Mono", monospace;
+}
+
+.send-comment-container > button {
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  border-radius: 10px;
+  transition: all ease-in 0.5s;
+  font-family: "Roboto Mono", monospace;
+}
+
+.send-comment-container > button:hover {
+  cursor: pointer;
+  background-color: white;
+  color: var(--color-blue);
+}
