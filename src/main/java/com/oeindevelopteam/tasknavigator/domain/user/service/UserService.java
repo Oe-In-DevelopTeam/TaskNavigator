@@ -38,7 +38,7 @@ public class UserService {
   public void signup(UserSignupRequestDto requestDto) {
 
     userRepository.findByUserId(requestDto.getUserId()).ifPresent((val) -> {
-      throw new CustomException(ErrorCode.BAD_REQUEST);
+      throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
     });
 
     String roleName;
