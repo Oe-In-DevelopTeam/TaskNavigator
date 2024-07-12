@@ -29,6 +29,11 @@ public class UserController {
     return "login";
   }
 
+  @GetMapping("/signup-page")
+  public String signupPage() {
+    return "signup";
+  }
+
   @ResponseBody
   @PostMapping("/signup")
   public ResponseEntity<CommonResponseDto> signup(
