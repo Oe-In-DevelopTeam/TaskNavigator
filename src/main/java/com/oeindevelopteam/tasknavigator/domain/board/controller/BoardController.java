@@ -41,11 +41,20 @@ public class BoardController {
     }
 
     @PutMapping("/admin/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId,@RequestBody BoardRequestDto boardRequestDto){
+    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
 
         BoardResponseDto boardResponseDto = boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드정보를 수정했습니다.", boardResponseDto));
+
+    }
+
+    @DeleteMapping("/admin/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<String>> deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId){
+
+        boardService.deleteBoard(userDetails.getUser(), boardId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 삭제했습니다.", null));
 
     }
 
