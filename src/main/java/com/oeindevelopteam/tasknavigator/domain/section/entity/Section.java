@@ -43,4 +43,8 @@ public class Section {
     public void updateOrder(int order) {
         this.sectionOrder = order;
     }
+
+    public void addCards(List<Card> cards) {
+        this.cards = cards;
+    }
 }
