@@ -28,6 +28,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath refreshToken = createString("refreshToken");
 
+    public final StringPath role = createString("role");
+
     public final ListPath<com.oeindevelopteam.tasknavigator.domain.board.entity.UserBoardMatches, com.oeindevelopteam.tasknavigator.domain.board.entity.QUserBoardMatches> userBoardMatchesList = this.<com.oeindevelopteam.tasknavigator.domain.board.entity.UserBoardMatches, com.oeindevelopteam.tasknavigator.domain.board.entity.QUserBoardMatches>createList("userBoardMatchesList", com.oeindevelopteam.tasknavigator.domain.board.entity.UserBoardMatches.class, com.oeindevelopteam.tasknavigator.domain.board.entity.QUserBoardMatches.class, PathInits.DIRECT2);
 
     public final StringPath userId = createString("userId");

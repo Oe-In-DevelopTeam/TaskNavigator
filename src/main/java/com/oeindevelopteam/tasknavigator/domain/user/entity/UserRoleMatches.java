@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "user_role_matches")
 @NoArgsConstructor
@@ -21,16 +22,15 @@ public class UserRoleMatches {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  private User userId;
+  private User user;
 
-  @Getter
   @ManyToOne
   @JoinColumn(name = "userRole_id")
-  private UserRole userRoleId;
+  private UserRole userRole;
 
   public UserRoleMatches(User user, UserRole userRole) {
-    this.userId = user;
-    this.userRoleId = userRole;
+    this.user = user;
+    this.userRole = userRole;
   }
 
 }
