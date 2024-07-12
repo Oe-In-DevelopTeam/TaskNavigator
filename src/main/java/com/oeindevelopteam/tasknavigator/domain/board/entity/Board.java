@@ -48,4 +48,8 @@ public class Board extends Timestamped {
 
     }
 
+    public void addSectionList(List<Section> sectionList) {
+        this.sectionList = sectionList;
+    }
+
 }

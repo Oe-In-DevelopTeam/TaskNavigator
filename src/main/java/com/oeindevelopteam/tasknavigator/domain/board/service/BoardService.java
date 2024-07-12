@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.board.service;
 
+import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardListResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
@@ -42,7 +43,7 @@ public class BoardService {
 
     }
 
-    public List<Board> getAllBoards(User user) {
+    public List<BoardListResponseDto> getAllBoards(User user) {
 
         // userId 로 Board 권한 체크
         List<UserRoleMatches> roles = userRoleMatchesRepository.findByUser(user);
