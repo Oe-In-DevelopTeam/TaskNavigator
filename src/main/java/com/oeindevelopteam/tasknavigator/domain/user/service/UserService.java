@@ -45,6 +45,10 @@ public class UserService {
         (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken))
             ? "MANAGER" : "USER";
 
+    if ("MANAGER".equals(roleName) && userRepository.findManager().isPresent()) {
+      throw new CustomException(ErrorCode.ALREADY_EXIST_MANAGER);
+    }
+
     UserRole userRole = userRoleRepository.findByRole(roleName)
         .orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND));
 
