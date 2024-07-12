@@ -8,15 +8,15 @@ import com.oeindevelopteam.tasknavigator.domain.board.repository.UserBoardMatche
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRole;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleMatchesRepository;
-import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
+import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
+import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+
+
 
 @Service
 public class BoardService {
@@ -81,13 +81,13 @@ public class BoardService {
         }
 
         if (!findAll){
-            throw new AccessDeniedException("보드를 생성할 수 없습니다. 매니저에게 문의주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         if(!StringUtils.hasText(boardRequestDto.getBoardName())){
-            throw new IllegalArgumentException("보드 이름을 입력해주세요.");
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_NAME);
         } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
-            throw new IllegalArgumentException("한줄 설명을 입력해주세요.");
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_INFO);
         }
 
         Board board = new Board(boardRequestDto.getBoardName(), boardRequestDto.getInfo());
@@ -114,17 +114,17 @@ public class BoardService {
         }
 
         if (!findAll){
-            throw new AccessDeniedException("보드 정보를 수정할 수 없습니다. 매니저에게 문의주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         if(!StringUtils.hasText(boardRequestDto.getBoardName())){
-            throw new IllegalArgumentException("보드 이름을 입력해주세요.");
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_NAME);
         } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
-            throw new IllegalArgumentException("한줄 설명을 입력해주세요.");
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_INFO);
         }
 
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NoSuchElementException("요청하신 보드가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         board.updateBoard(boardRequestDto);
 
