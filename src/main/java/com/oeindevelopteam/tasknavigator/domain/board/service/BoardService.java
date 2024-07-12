@@ -131,4 +131,31 @@ public class BoardService {
         return new BoardResponseDto(board.getBoardName(), board.getInfo());
 
     }
+
+    @Transactional
+    public void deleteBoard(User user, Long boardId) {
+
+        // userId 로 Board 권한 체크
+        List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
+
+        Boolean findAll = false;
+
+        for (UserRole l : roles){
+            if (l.getRole().equals("MANAGER")){
+                findAll = true;
+                break;
+            }
+        }
+
+        if (!findAll){
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        boardRepository.delete(board);
+
+    }
+
 }
