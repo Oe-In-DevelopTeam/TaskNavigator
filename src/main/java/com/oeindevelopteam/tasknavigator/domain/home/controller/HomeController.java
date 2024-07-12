@@ -10,4 +10,9 @@ public class HomeController {
   public String homePage() {
     return "index";
   }
+
+  @GetMapping("/home/newBoard")
+  public String createBoardPage() {
+    return "create-board";
+  }
 }
