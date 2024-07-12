@@ -95,6 +95,11 @@ public class SecurityConfig {
         .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 
+    http.formLogin((formLogin) ->
+        formLogin
+            .loginPage("/users/login-page").permitAll()
+    );
+
     return http.build();
   }
 

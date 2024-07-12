@@ -6,12 +6,15 @@ import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
 
@@ -21,6 +24,12 @@ public class UserController {
     this.userService = userService;
   }
 
+  @GetMapping("/login-page")
+  public String loginPage() {
+    return "login";
+  }
+
+  @ResponseBody
   @PostMapping("/signup")
   public ResponseEntity<CommonResponseDto> signup(
       @Valid @RequestBody UserSignupRequestDto requestDto) {
@@ -31,6 +40,7 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
+  @ResponseBody
   @PostMapping("/logout")
   public ResponseEntity<CommonResponseDto> logout() {
     userService.logout();
