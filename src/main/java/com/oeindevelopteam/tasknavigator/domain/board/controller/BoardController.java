@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.board.controller;
 
+import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardListResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
@@ -23,9 +24,9 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public ResponseEntity<CommonResponseDto<List<Board>>> getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponseDto<List<BoardListResponseDto>>> getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        List<Board> boardList = boardService.getAllBoards(userDetails.getUser());
+        List<BoardListResponseDto> boardList = boardService.getAllBoards(userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList));
 
