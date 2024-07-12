@@ -1,6 +1,5 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,5 +29,9 @@ public class CardTag {
 
   public CardTag(String name) {
     this.name = name;
+  }
+
+  public void addCardTagMatch(CardTagMatches cardTagMatches) {
+    this.tagMatches.add(cardTagMatches);
   }
 }
