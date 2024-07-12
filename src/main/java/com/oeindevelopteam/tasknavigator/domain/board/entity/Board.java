@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.board.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardRequestDto;
 import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,6 +35,15 @@ public class Board extends Timestamped {
 
         this.boardName = boardName;
         this.info = info;
+
+    }
+
+    public Board updateBoard(BoardRequestDto boardRequestDto){
+
+        this.boardName = boardRequestDto.getBoardName();
+        this.info = boardRequestDto.getInfo();
+
+        return this;
 
     }
 

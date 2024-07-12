@@ -12,6 +12,8 @@ import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -63,6 +65,7 @@ public class BoardService {
 
     }
 
+    @Transactional
     public BoardResponseDto createBoard(User user, BoardRequestDto boardRequestDto) {
 
         // userId 로 Board 권한 체크
@@ -78,19 +81,54 @@ public class BoardService {
         }
 
         if (!findAll){
-            throw new AccessDeniedException("보드를 생성할 수 없습니다.");
+            throw new AccessDeniedException("보드를 생성할 수 없습니다. 매니저에게 문의주세요.");
+        }
+
+        if(!StringUtils.hasText(boardRequestDto.getBoardName())){
+            throw new IllegalArgumentException("보드 이름을 입력해주세요.");
+        } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
+            throw new IllegalArgumentException("한줄 설명을 입력해주세요.");
         }
 
         Board board = new Board(boardRequestDto.getBoardName(), boardRequestDto.getInfo());
 
-        boardRepository.save(board);
+        Board saveBoard = boardRepository.save(board);
 
-        Board saveBoard = boardRepository.findById(board.getId())
-                .orElseThrow(() -> new NoSuchElementException("보드 조회 실패"));
+        return new BoardResponseDto(saveBoard.getBoardName(), saveBoard.getInfo());
 
-        BoardResponseDto boardResponseDto = new BoardResponseDto(saveBoard.getBoardName(), saveBoard.getInfo());
+    }
 
-        return boardResponseDto;
+    @Transactional
+    public BoardResponseDto updateBoard(User user, Long boardId, BoardRequestDto boardRequestDto) {
+
+        // userId 로 Board 권한 체크
+        List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
+
+        Boolean findAll = false;
+
+        for (UserRole l : roles){
+            if (l.getRole().equals("MANAGER")){
+                findAll = true;
+                break;
+            }
+        }
+
+        if (!findAll){
+            throw new AccessDeniedException("보드 정보를 수정할 수 없습니다. 매니저에게 문의주세요.");
+        }
+
+        if(!StringUtils.hasText(boardRequestDto.getBoardName())){
+            throw new IllegalArgumentException("보드 이름을 입력해주세요.");
+        } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
+            throw new IllegalArgumentException("한줄 설명을 입력해주세요.");
+        }
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new NoSuchElementException("요청하신 보드가 존재하지 않습니다."));
+
+        board.updateBoard(boardRequestDto);
+
+        return new BoardResponseDto(board.getBoardName(), board.getInfo());
 
     }
 }

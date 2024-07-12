@@ -9,10 +9,7 @@ import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,6 +37,15 @@ public class BoardController {
         BoardResponseDto boardResponseDto = boardService.createBoard(userDetails.getUser(), boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 생성했습니다.", boardResponseDto));
+
+    }
+
+    @PutMapping("/admin/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId,@RequestBody BoardRequestDto boardRequestDto){
+
+        BoardResponseDto boardResponseDto = boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드정보를 수정했습니다.", boardResponseDto));
 
     }
 
