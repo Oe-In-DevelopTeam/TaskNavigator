@@ -14,17 +14,20 @@ nav {
 
 .nav-right {
   display: flex;
+  align-items: center;
   gap: 40px;
 }
 
-.nav-right > button {
+.nav-right > a {
   border: none;
   background-color: transparent;
   color: white;
   transition: all ease-in 0.2s;
+  font-size: 18px;
+  opacity: 0.7;
 }
 
-.nav-right > button:hover {
+.nav-right > a:hover {
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 1;
 }
