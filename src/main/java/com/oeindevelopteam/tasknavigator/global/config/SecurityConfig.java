@@ -77,11 +77,18 @@ public class SecurityConfig {
     http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            .requestMatchers("/api/users/signup", "/api/users/token/refresh").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/users/**", "/api/admin/**").permitAll()
-            .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-            .anyRequest().authenticated())
+//            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+//            .requestMatchers("/users/signup", "/users/token/refresh", "/users/login" ).permitAll()
+//            .requestMatchers(HttpMethod.GET).authenticated()
+//            .requestMatchers(HttpMethod.POST,"/boards/**").hasAuthority("ROLE_MANAGER")
+//            .requestMatchers(HttpMethod.POST, "/boards/{boardId}/columns/{columnId}/cards/{cardId}").hasAuthority("USER")
+//            .requestMatchers(HttpMethod.PUT, "/boards/**").hasAuthority("MANAGER")
+//            .requestMatchers(HttpMethod.PUT, "/boards/{boardId}/columns/{columnId}/cards/{cardId}").hasAuthority("USER")
+//            .requestMatchers(HttpMethod.DELETE, "/boards/**").hasAuthority("MANAGER")
+//            .requestMatchers(HttpMethod.DELETE, "/boards/{boardId}/columns/{columnId}/cards/{cardId}").hasAuthority("USER")
+//            .requestMatchers("/admin/**").hasAuthority("MANAGER")
+//            .anyRequest().authenticated())
+            .anyRequest().permitAll()) // 모든 요청에 접근 허용, 개발 완료 후 수정 예정
         .exceptionHandling((exceptionHandling) -> {
           exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint);
         })

@@ -24,9 +24,9 @@ public class QUserRoleMatches extends EntityPathBase<UserRoleMatches> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QUser userId;
+    public final QUser user;
 
-    public final QUserRole userRoleId;
+    public final QUserRole userRole;
 
     public QUserRoleMatches(String variable) {
         this(UserRoleMatches.class, forVariable(variable), INITS);
@@ -46,8 +46,8 @@ public class QUserRoleMatches extends EntityPathBase<UserRoleMatches> {
 
     public QUserRoleMatches(Class<? extends UserRoleMatches> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.userId = inits.isInitialized("userId") ? new QUser(forProperty("userId")) : null;
-        this.userRoleId = inits.isInitialized("userRoleId") ? new QUserRole(forProperty("userRoleId")) : null;
+        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
+        this.userRole = inits.isInitialized("userRole") ? new QUserRole(forProperty("userRole")) : null;
     }
 
 }

@@ -5,6 +5,7 @@ import com.oeindevelopteam.tasknavigator.domain.user.dto.UserSignupRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,7 +37,10 @@ public class User {
   @Column
   private String refreshToken;
 
-  @OneToMany(mappedBy = "userId")
+  @Column
+  private String role;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
@@ -49,6 +53,8 @@ public class User {
   public User(UserSignupRequestDto requestDto, UserRole userRole) {
     this.userId = requestDto.getUserId();
     this.password = requestDto.getPassword();
+    this.username = requestDto.getUsername();
+    this.role = userRole.getRole();
     this.userRoleMatches.add(new UserRoleMatches(this, userRole));
   }
 
@@ -66,7 +72,7 @@ public class User {
     if (userRoleMatches.isEmpty()) {
       return null;
     }
-    return userRoleMatches.get(0).getUserRoleId();
+    return userRoleMatches.get(0).getUserRole();
   }
 
   public void updateRefreshToken(String refreshToken) {

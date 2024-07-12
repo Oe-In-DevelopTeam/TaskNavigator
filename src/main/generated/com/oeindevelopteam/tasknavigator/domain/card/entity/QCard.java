@@ -22,17 +22,27 @@ public class QCard extends EntityPathBase<Card> {
 
     public static final QCard card = new QCard("card");
 
-    public final com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn column;
+    public final com.oeindevelopteam.tasknavigator.global.entity.QTimestamped _super = new com.oeindevelopteam.tasknavigator.global.entity.QTimestamped(this);
 
     public final NumberPath<Long> columnId = createNumber("columnId", Long.class);
 
     public final StringPath content = createString("content");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath dueDate = createString("dueDate");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath manager = createString("manager");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
+    public final com.oeindevelopteam.tasknavigator.domain.section.entity.QSection section;
+
+    public final SetPath<CardTagMatches, QCardTagMatches> tagMatches = this.<CardTagMatches, QCardTagMatches>createSet("tagMatches", CardTagMatches.class, QCardTagMatches.class, PathInits.DIRECT2);
 
     public final StringPath title = createString("title");
 
@@ -56,7 +66,7 @@ public class QCard extends EntityPathBase<Card> {
 
     public QCard(Class<? extends Card> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.column = inits.isInitialized("column") ? new com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn(forProperty("column"), inits.get("column")) : null;
+        this.section = inits.isInitialized("section") ? new com.oeindevelopteam.tasknavigator.domain.section.entity.QSection(forProperty("section"), inits.get("section")) : null;
     }
 
 }

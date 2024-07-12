@@ -1,7 +1,7 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
-import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
+import com.oeindevelopteam.tasknavigator.domain.section.entity.Section;
 import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,7 +49,7 @@ public class Card extends Timestamped {
 
   @ManyToOne
   @JoinColumn(name = "'column'")
-  private com.oeindevelopteam.tasknavigator.domain.column.entity.Column column;
+  private Section section;
 
   public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
     this.userId = userId;
@@ -77,5 +77,20 @@ public class Card extends Timestamped {
 
   public void setTagMatches(Set<CardTagMatches> tagMatches) {
     this.tagMatches = tagMatches;
+  }
+
+  public void editTagMatches(Set<CardTagMatches> newTagMatches) {
+    tagMatches.addAll(newTagMatches);
+  }
+
+  public void addCardTag(CardTag cardTag) {
+    CardTagMatches cardTagMatches = new CardTagMatches(this, cardTag);
+
+    this.tagMatches.add(cardTagMatches);
+    cardTag.addCardTagMatch(cardTagMatches);
+  }
+
+  public void removeCardTag(CardTagMatches cardTagMatches) {
+    this.tagMatches.remove(cardTagMatches);
   }
 }
