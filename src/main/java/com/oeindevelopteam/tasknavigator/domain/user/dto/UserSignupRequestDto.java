@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.user.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -22,4 +23,6 @@ public class UserSignupRequestDto {
   @NotBlank(message = "이름을 입력해주세요.")
   private String username;
 
+  @Nullable
+  private String adminToken;
 }

@@ -34,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
     UserRole role = user.getUserRole();
-    String roleString = role.getRole();
+    String roleString = (role != null) ? role.getRole() : "ROLE_USER"; // 기본값 설정
 
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleString);
     Collection<GrantedAuthority> authorities = new ArrayList<>();
