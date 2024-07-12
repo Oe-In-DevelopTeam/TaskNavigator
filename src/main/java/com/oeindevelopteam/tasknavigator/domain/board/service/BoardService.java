@@ -8,87 +8,127 @@ import com.oeindevelopteam.tasknavigator.domain.board.repository.UserBoardMatche
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRole;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleMatchesRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
-import org.springframework.security.access.AccessDeniedException;
+import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
+import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+
 
 @Service
 public class BoardService {
 
-  private final BoardRepository boardRepository;
-  private final UserBoardMatchesRepository userBoardMatchesRepository;
-  private final UserRoleMatchesRepository userRoleMatchesRepository;
+    private final BoardRepository boardRepository;
+    private final UserBoardMatchesRepository userBoardMatchesRepository;
+    private final UserRoleMatchesRepository userRoleMatchesRepository;
 
-  public BoardService(UserBoardMatchesRepository userBoardMatchesRepository
-      , UserRoleMatchesRepository userRoleMatchesRepository
-      , BoardRepository boardRepository) {
+    public BoardService(UserBoardMatchesRepository userBoardMatchesRepository
+                        , UserRoleMatchesRepository userRoleMatchesRepository
+                        , BoardRepository boardRepository) {
 
-    this.boardRepository = boardRepository;
-    this.userBoardMatchesRepository = userBoardMatchesRepository;
-    this.userRoleMatchesRepository = userRoleMatchesRepository;
-
-  }
-
-  public List<Board> getAllBoards(User user) {
-
-    // userId 로 Board 권한 체크
-    List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
-
-    List<Board> boardList;
-
-    Boolean findAll = false;
-
-    for (UserRole l : roles) {
-      if (l.getRole().equals("MANAGER")) {
-        findAll = true;
-        break;
-      }
-    }
-
-    if (findAll) {
-
-      // 매니저 - 모든 Board 리스트 조회
-      return userBoardMatchesRepository.findBoard();
-
-    } else {
-
-      // User - 초대받은 Board 리스트 조회
-      return userBoardMatchesRepository.findBoardByUserId(user.getId());
+        this.boardRepository = boardRepository;
+        this.userBoardMatchesRepository = userBoardMatchesRepository;
+        this.userRoleMatchesRepository = userRoleMatchesRepository;
 
     }
 
-  }
+    public List<Board> getAllBoards(User user) {
 
-  public BoardResponseDto createBoard(User user, BoardRequestDto boardRequestDto) {
+        // userId 로 Board 권한 체크
+        List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
 
-    // userId 로 Board 권한 체크
-    List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
+        List<Board> boardList;
 
-    Boolean findAll = false;
+        Boolean findAll = false;
 
-    for (UserRole l : roles) {
-      if (l.getRole().equals("MANAGER")) {
-        findAll = true;
-        break;
-      }
+        for (UserRole l : roles){
+            if (l.getRole().equals("MANAGER")){
+                findAll = true;
+                break;
+            }
+        }
+
+        if (findAll){
+
+            // 매니저 - 모든 Board 리스트 조회
+            return userBoardMatchesRepository.findBoard();
+
+        } else {
+
+            // User - 초대받은 Board 리스트 조회
+            return userBoardMatchesRepository.findBoardByUserId(user.getId());
+
+        }
+
     }
 
-    if (!findAll) {
-      throw new AccessDeniedException("보드를 생성할 수 없습니다.");
+    @Transactional
+    public BoardResponseDto createBoard(User user, BoardRequestDto boardRequestDto) {
+
+        // userId 로 Board 권한 체크
+        List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
+
+        Boolean findAll = false;
+
+        for (UserRole l : roles){
+            if (l.getRole().equals("MANAGER")){
+                findAll = true;
+                break;
+            }
+        }
+
+        if (!findAll){
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        if(!StringUtils.hasText(boardRequestDto.getBoardName())){
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_NAME);
+        } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_INFO);
+        }
+
+        Board board = new Board(boardRequestDto.getBoardName(), boardRequestDto.getInfo());
+
+        Board saveBoard = boardRepository.save(board);
+
+        return new BoardResponseDto(saveBoard.getBoardName(), saveBoard.getInfo());
+
     }
 
-    Board board = new Board(boardRequestDto.getBoardName(), boardRequestDto.getInfo());
+    @Transactional
+    public BoardResponseDto updateBoard(User user, Long boardId, BoardRequestDto boardRequestDto) {
 
-    boardRepository.save(board);
+        // userId 로 Board 권한 체크
+        List<UserRole> roles = userRoleMatchesRepository.findUserRoleByUserId(user);
 
-    Board saveBoard = boardRepository.findById(board.getId())
-        .orElseThrow(() -> new NoSuchElementException("보드 조회 실패"));
+        Boolean findAll = false;
 
-    BoardResponseDto boardResponseDto = new BoardResponseDto(saveBoard.getBoardName(),
-        saveBoard.getInfo());
+        for (UserRole l : roles){
+            if (l.getRole().equals("MANAGER")){
+                findAll = true;
+                break;
+            }
+        }
 
-    return boardResponseDto;
+        if (!findAll){
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
 
-  }
+        if(!StringUtils.hasText(boardRequestDto.getBoardName())){
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_NAME);
+        } else if(!StringUtils.hasText(boardRequestDto.getInfo())){
+            throw new CustomException(ErrorCode.REQUIRE_BOARD_INFO);
+        }
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        board.updateBoard(boardRequestDto);
+
+        return new BoardResponseDto(board.getBoardName(), board.getInfo());
+
+    }
 }
