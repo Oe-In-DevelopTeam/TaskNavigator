@@ -113,7 +113,6 @@ public class CardService {
     return new CardResponseDto(card);
   }
 
-  @Transactional
   public void deleteCard(Long cardId) {
     // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
     // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
@@ -122,7 +121,6 @@ public class CardService {
 
     cardRepository.delete(card);
   }
-
 
   public Card findCardById(Long cardId) {
     return cardRepository.findById(cardId)
