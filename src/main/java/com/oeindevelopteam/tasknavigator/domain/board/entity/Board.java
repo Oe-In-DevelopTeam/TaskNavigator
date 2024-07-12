@@ -26,7 +26,7 @@ public class Board extends Timestamped {
     @Column(nullable = false)
     private String info;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserBoardMatches> userBoardMatchesList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)

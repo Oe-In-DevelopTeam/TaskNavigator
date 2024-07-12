@@ -49,8 +49,7 @@ public class SectionService {
 
   @Transactional
   public void deleteSection(Long boardId, Long columnId) {
-    Section section = sectionRepository.findById(columnId).orElseThrow(() ->
-        new CustomException(ErrorCode.SECTION_NOT_FOUND));
+    Section section = findByIdReturnSection(columnId);
 
     // TODO: 이 부분 역시 BoardService에 getBoard가 구현되면 바뀔 부분
     Board board = boardRepository.findById(boardId).orElseThrow(() ->
@@ -61,6 +60,20 @@ public class SectionService {
 
     sectionRepository.delete(section);
     sectionStatusRepository.delete(status);
+  }
+
+  @Transactional
+  public void moveSection(Long columnId, int order) {
+    Section section = findByIdReturnSection(columnId);
+
+    section.updateOrder(order);
+
+    sectionRepository.save(section);
+  }
+
+  public Section findByIdReturnSection(Long sectionId) {
+    return sectionRepository.findById(sectionId).orElseThrow(() ->
+        new CustomException(ErrorCode.SECTION_NOT_FOUND));
   }
 
   public Section getSerction(Long sectionId) {

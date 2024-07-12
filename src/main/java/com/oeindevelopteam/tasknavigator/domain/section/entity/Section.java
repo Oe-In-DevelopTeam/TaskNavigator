@@ -39,4 +39,8 @@ public class Section {
         this.sectionOrder = requestDto.getSectionOrder();
         this.status = requestDto.getStatus();
     }
+
+    public void updateOrder(int order) {
+        this.sectionOrder = order;
+    }
 }
