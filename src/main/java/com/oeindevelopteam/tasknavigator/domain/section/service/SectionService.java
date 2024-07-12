@@ -31,8 +31,8 @@ public class SectionService {
       throw new CustomException(ErrorCode.DUPLICATE_STATUS);
     }
 
-//    Board board = boardRepository.findById(boardId).orElseThrow(() ->
-//        new CustomException(ErrorCode.BOARD_NOT_FOUND));
+    // 보드 생성과 BoardService에 getBoard가 완료되면 아래 코드로 바꿀 예정
+//    Board board = boardService.getBoard(boardId);
 
     // 보드 생성이 되지 않아 임시로 저장하는 코드
     Board board = new Board("testBoard", "test");
@@ -45,6 +45,22 @@ public class SectionService {
     Section saveSection = sectionRepository.save(newSection);
 
     return new SectionResponseDto(saveSection);
+  }
+
+  @Transactional
+  public void deleteSection(Long boardId, Long columnId) {
+    Section section = sectionRepository.findById(columnId).orElseThrow(() ->
+        new CustomException(ErrorCode.SECTION_NOT_FOUND));
+
+    // TODO: 이 부분 역시 BoardService에 getBoard가 구현되면 바뀔 부분
+    Board board = boardRepository.findById(boardId).orElseThrow(() ->
+        new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+    SectionStatus status = sectionStatusRepository.findByStatusAndBoard(section.getStatus(), board).orElseThrow(() ->
+        new CustomException(ErrorCode.SECTION_STATUS_NOT_FOUND));
+
+    sectionRepository.delete(section);
+    sectionStatusRepository.delete(status);
   }
 
   public Section getSerction(Long sectionId) {

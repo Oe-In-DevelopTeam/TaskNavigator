@@ -5,6 +5,7 @@ import com.oeindevelopteam.tasknavigator.domain.card.entity.Card;
 import com.oeindevelopteam.tasknavigator.domain.section.dto.SectionRequestDto;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -20,15 +21,17 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "컬럼 순서는 필수입니다.")
     private int sectionOrder;
 
+    @NotNull(message = "컬럼 상태는 필수입니다.")
     private String status;
 
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "section")
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Card> cards = new ArrayList<>();
 
     public Section(Board board, SectionRequestDto requestDto) {
