@@ -14,7 +14,8 @@ public enum ErrorCode {
   ROLE_NOT_FOUND(404, "해당 역할을 찾을 수 없습니다."),
   BOARD_NOT_FOUND(404, "해당 보드를 찾을 수 없습니다."),
   REQUIRE_BOARD_NAME(404, "보드 이름을 입력해주세요."),
-  REQUIRE_BOARD_INFO(404, "한줄 소개를 입력해주세요.");
+  REQUIRE_BOARD_INFO(404, "한줄 소개를 입력해주세요."),
+  ALREADY_HAS_ACCESS(404, "해당 사용자는 이미 권한이 있습니다.");
 
   private int status;
   private String message;

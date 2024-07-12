@@ -34,6 +34,7 @@ public class BoardController {
     @PostMapping("/admin/boards")
     public ResponseEntity<CommonResponseDto<BoardResponseDto>> createBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto boardRequestDto){
 
+        System.out.println(userDetails.getUser());
         BoardResponseDto boardResponseDto = boardService.createBoard(userDetails.getUser(), boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 생성했습니다.", boardResponseDto));
@@ -46,6 +47,24 @@ public class BoardController {
         BoardResponseDto boardResponseDto = boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드정보를 수정했습니다.", boardResponseDto));
+
+    }
+
+    @DeleteMapping("/admin/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<String>> deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId){
+
+        boardService.deleteBoard(userDetails.getUser(), boardId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 삭제했습니다.", null));
+
+    }
+
+    @PostMapping("/admin/boards/{boardId}/invite/{userId}")
+    public ResponseEntity<CommonResponseDto<BoardResponseDto>> inviteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @PathVariable Long userId){
+
+        BoardResponseDto boardResponseDto = boardService.inviteBoard(userDetails.getUser(), boardId, userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드에 초대했습니다.", boardResponseDto));
 
     }
 
