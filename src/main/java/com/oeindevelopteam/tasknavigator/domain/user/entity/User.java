@@ -40,10 +40,6 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UserBoardMatches> userBoardMatchesList = new ArrayList<>();
 
-  @ElementCollection
-  private List<String> passwordList = new LinkedList<>();
-  private static final int PASSWORD_LENGTH = 3;
-
   public User(UserSignupRequestDto requestDto, UserRole userRole) {
     this.userId = requestDto.getUserId();
     this.password = requestDto.getPassword();
@@ -57,12 +53,6 @@ public class User {
 
   public void encrytionPassword(String encrytionPassword) {
     this.password = encrytionPassword;
-
-    if (passwordList.size() >= PASSWORD_LENGTH) {
-      passwordList.remove(0);
-    }
-
-    passwordList.add(encrytionPassword);
   }
 
   public UserRole getUserRole() {
