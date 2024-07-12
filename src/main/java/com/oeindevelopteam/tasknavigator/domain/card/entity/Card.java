@@ -78,4 +78,19 @@ public class Card extends Timestamped {
   public void setTagMatches(Set<CardTagMatches> tagMatches) {
     this.tagMatches = tagMatches;
   }
+
+  public void editTagMatches(Set<CardTagMatches> newTagMatches) {
+    tagMatches.addAll(newTagMatches);
+  }
+
+  public void addCardTag(CardTag cardTag) {
+    CardTagMatches cardTagMatches = new CardTagMatches(this, cardTag);
+
+    this.tagMatches.add(cardTagMatches);
+    cardTag.addCardTagMatch(cardTagMatches);
+  }
+
+  public void removeCardTag(CardTagMatches cardTagMatches) {
+    this.tagMatches.remove(cardTagMatches);
+  }
 }
