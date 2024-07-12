@@ -55,7 +55,10 @@ public class User {
     this.password = requestDto.getPassword();
     this.username = requestDto.getUsername();
     this.role = userRole.getRole();
-    this.userRoleMatches.add(new UserRoleMatches(this, userRole));
+
+    UserRoleMatches userRoleMatch = new UserRoleMatches(this, userRole);
+    this.userRoleMatches.add(userRoleMatch);
+    userRole.getUserRoleMatches().add(userRoleMatch);
   }
 
   public void encrytionPassword(String encrytionPassword) {

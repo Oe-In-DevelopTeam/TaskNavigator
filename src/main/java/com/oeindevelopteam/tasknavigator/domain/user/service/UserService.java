@@ -4,6 +4,7 @@ import com.oeindevelopteam.tasknavigator.domain.user.dto.UserSignupRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRole;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRepository;
+import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleMatchesRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.security.UserDetailsImpl;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
@@ -20,15 +21,17 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserRoleRepository userRoleRepository;
   private final PasswordEncoder passwordEncoder;
+  private final UserRoleMatchesRepository userRoleMatchesRepository;
 
   @Value("${admin.token}")
   private String adminToken;
 
   public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder, UserRoleMatchesRepository userRoleMatchesRepository) {
     this.userRepository = userRepository;
     this.userRoleRepository = userRoleRepository;
     this.passwordEncoder = passwordEncoder;
+    this.userRoleMatchesRepository = userRoleMatchesRepository;
   }
 
   @Transactional
@@ -54,6 +57,7 @@ public class UserService {
     user.encrytionPassword(encryptionPassword);
 
     userRepository.save(user);
+
   }
 
   @Transactional

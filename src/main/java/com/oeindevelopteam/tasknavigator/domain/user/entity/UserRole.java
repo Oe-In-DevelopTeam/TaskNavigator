@@ -1,5 +1,6 @@
 package com.oeindevelopteam.tasknavigator.domain.user.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,12 +24,8 @@ public class UserRole {
   @Column
   private String role;
 
-  @OneToMany(mappedBy = "userRole")
+  @OneToMany(mappedBy = "userRole", cascade = CascadeType.ALL)
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
-
-  public UserRole(String role) {
-    this.role = role;
-  }
 
   public void addRole (String roleName) {
     this.role = roleName;
