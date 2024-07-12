@@ -4,12 +4,11 @@ import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.board.entity.QBoard;
 import com.oeindevelopteam.tasknavigator.domain.board.entity.QUserBoardMatches;
 import com.oeindevelopteam.tasknavigator.domain.card.entity.QCard;
-import com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn;
+import com.oeindevelopteam.tasknavigator.domain.section.entity.QSection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,14 +20,14 @@ public class UserBoardMatchesRepositoryImpl implements UserBoardMatchesRepositor
 
         QUserBoardMatches userBoardMatches = QUserBoardMatches.userBoardMatches;
         QBoard board = QBoard.board;
-        QColumn column = QColumn.column;
+        QSection section = QSection.section;
         QCard card = QCard.card;
 
         return jpaQueryFactory.select(board)
                 .from(userBoardMatches)
                 .innerJoin(userBoardMatches.board,board).fetchJoin()
-                .leftJoin(board.columnList, column).fetchJoin()
-                .leftJoin(column.cards, card).fetchJoin()
+                .leftJoin(board.sectionList, section).fetchJoin()
+                .leftJoin(section.cards, card).fetchJoin()
                 .where(userBoardMatches.user.id.eq(userId))
                 .fetch();
 
@@ -38,14 +37,14 @@ public class UserBoardMatchesRepositoryImpl implements UserBoardMatchesRepositor
 
         QUserBoardMatches userBoardMatches = QUserBoardMatches.userBoardMatches;
         QBoard board = QBoard.board;
-        QColumn column = QColumn.column;
+        QSection section = QSection.section;
         QCard card = QCard.card;
 
         return jpaQueryFactory.select(board)
                 .from(userBoardMatches)
                 .innerJoin(userBoardMatches.board,board).fetchJoin()
-                .leftJoin(board.columnList, column).fetchJoin()
-                .leftJoin(column.cards, card).fetchJoin()
+                .leftJoin(board.sectionList, section).fetchJoin()
+                .leftJoin(section.cards, card).fetchJoin()
                 .fetch();
 
     }

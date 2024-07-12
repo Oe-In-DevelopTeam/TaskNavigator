@@ -1,4 +1,4 @@
-package com.oeindevelopteam.tasknavigator.domain.column.entity;
+package com.oeindevelopteam.tasknavigator.domain.section.entity;
 
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.entity.Card;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "'column'")
-public class Column {
+@Table(name = "sections")
+public class Section {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,6 @@ public class Column {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "column")
+    @OneToMany(mappedBy = "section")
     private List<Card> cards = new ArrayList<>();
-
 }
