@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
   FAIL(500, "실패했습니다."),
-  CARD_NOT_FOUND(404, "해당 카드를 찾을 수 없습니다."),
-  CARD_TAG_NOT_FOUND(404, "해당 카드 태그를 찾을 수 없습니다.");
+  CARD_TAG_NOT_FOUND(404, "해당 카드 태그를 찾을 수 없습니다."),
   BAD_REQUEST(400, "잘못된 요청입니다."),
   UNAUTHORIZED(401, "접근 권한이 없습니다."),
   CARD_NOT_FOUND(404, "해당 카드를 찾을 수 없습니다."),
