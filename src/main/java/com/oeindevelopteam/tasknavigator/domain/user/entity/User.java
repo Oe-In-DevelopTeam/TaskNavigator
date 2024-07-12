@@ -34,7 +34,7 @@ public class User {
   @Column
   private String role;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "user")
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
