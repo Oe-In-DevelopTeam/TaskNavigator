@@ -41,12 +41,9 @@ public class UserService {
       throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
     });
 
-    String roleName;
-    if (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken)) {
-      roleName = "MANAGER";
-    } else {
-      roleName = "USER";
-    }
+    String roleName =
+        (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken))
+            ? "MANAGER" : "USER";
 
     UserRole userRole = userRoleRepository.findByRole(roleName)
         .orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND));
@@ -66,7 +63,7 @@ public class UserService {
         .getAuthentication().getPrincipal();
 
     User user = userRepository.findByUserIdWithRoles(userDetails.getUsername())
-            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
     user.updateRefreshToken(null);
     userRepository.save(user);
