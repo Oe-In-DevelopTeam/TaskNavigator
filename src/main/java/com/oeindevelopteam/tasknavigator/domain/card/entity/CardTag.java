@@ -25,7 +25,7 @@ public class CardTag {
   @Column(nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "tag")
   private List<CardTagMatches> tagMatches;
 
   public CardTag(String name) {
