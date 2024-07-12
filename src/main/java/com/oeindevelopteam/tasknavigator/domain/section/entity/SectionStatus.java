@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 public class SectionStatus {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,5 +20,10 @@ public class SectionStatus {
 
   @ManyToOne
   @JoinColumn(name = "board_id")
-  private Board baord;
+  private Board board;
+
+  public SectionStatus(String status, Board board) {
+    this.status = status;
+    this.board = board;
+  }
 }
