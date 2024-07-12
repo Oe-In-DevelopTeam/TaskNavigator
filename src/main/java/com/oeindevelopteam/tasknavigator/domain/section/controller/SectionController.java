@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,5 +36,12 @@ public class SectionController {
     sectionService.deleteSection(boardId, columnId);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 삭제되었습니다.", null));
+  }
+
+  @PutMapping("/{columnId}")
+  ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order) {
+    sectionService.moveSection(columnId, order);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 이동되었습니다.", null));
   }
 }
