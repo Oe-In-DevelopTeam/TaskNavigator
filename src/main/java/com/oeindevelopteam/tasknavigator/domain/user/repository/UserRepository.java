@@ -9,8 +9,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByUserId(String userId);
 
-  // TODO : 유저 수 조회
-  @Query("SELECT COUNT(u) FROM User u")
-  long count();
-
 }

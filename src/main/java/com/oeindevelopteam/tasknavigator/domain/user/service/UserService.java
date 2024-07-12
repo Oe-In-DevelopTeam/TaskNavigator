@@ -8,6 +8,7 @@ import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleReposito
 import com.oeindevelopteam.tasknavigator.domain.user.security.UserDetailsImpl;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
 import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserRoleRepository userRoleRepository;
   private final PasswordEncoder passwordEncoder;
+
+  @Value("${admin.token}")
+  private String adminToken;
 
   public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
       PasswordEncoder passwordEncoder) {
@@ -34,9 +38,12 @@ public class UserService {
       throw new CustomException(ErrorCode.BAD_REQUEST);
     });
 
-    // TODO : role 부여 설정
-    boolean isFirstUser = userRepository.count() == 0;
-    String roleName = isFirstUser ? "MANAGER" : "USER";
+    String roleName;
+    if (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken)) {
+      roleName = "MANAGER";
+    } else {
+      roleName = "USER";
+    }
 
     UserRole userRole = userRoleRepository.findByRole(roleName)
         .orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND));
