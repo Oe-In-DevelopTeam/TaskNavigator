@@ -62,17 +62,14 @@ public class UserService {
 
   @Transactional
   public void logout() {
-
-    User user = getUser();
-    user.updateRefreshToken(null);
-
-  }
-
-  public User getUser() {
     UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
         .getAuthentication().getPrincipal();
-    return userRepository.findByUserId(userDetails.getUsername())
-        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+    User user = userRepository.findByUserIdWithRoles(userDetails.getUsername())
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+    user.updateRefreshToken(null);
+    userRepository.save(user);
   }
 
 }
