@@ -1,4 +1,4 @@
-package com.oeindevelopteam.tasknavigator.domain.column.entity;
+package com.oeindevelopteam.tasknavigator.domain.section.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QColumn is a Querydsl query type for Column
+ * QSection is a Querydsl query type for Section
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QColumn extends EntityPathBase<Column> {
+public class QSection extends EntityPathBase<Section> {
 
-    private static final long serialVersionUID = -669712069L;
+    private static final long serialVersionUID = 697346901L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QColumn column = new QColumn("column");
+    public static final QSection section = new QSection("section");
 
     public final com.oeindevelopteam.tasknavigator.domain.board.entity.QBoard board;
 
@@ -28,23 +28,23 @@ public class QColumn extends EntityPathBase<Column> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public QColumn(String variable) {
-        this(Column.class, forVariable(variable), INITS);
+    public QSection(String variable) {
+        this(Section.class, forVariable(variable), INITS);
     }
 
-    public QColumn(Path<? extends Column> path) {
+    public QSection(Path<? extends Section> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QColumn(PathMetadata metadata) {
+    public QSection(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QColumn(PathMetadata metadata, PathInits inits) {
-        this(Column.class, metadata, inits);
+    public QSection(PathMetadata metadata, PathInits inits) {
+        this(Section.class, metadata, inits);
     }
 
-    public QColumn(Class<? extends Column> type, PathMetadata metadata, PathInits inits) {
+    public QSection(Class<? extends Section> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.board = inits.isInitialized("board") ? new com.oeindevelopteam.tasknavigator.domain.board.entity.QBoard(forProperty("board")) : null;
     }
