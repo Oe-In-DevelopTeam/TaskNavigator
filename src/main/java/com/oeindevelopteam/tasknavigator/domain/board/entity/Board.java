@@ -1,5 +1,7 @@
 package com.oeindevelopteam.tasknavigator.domain.board.entity;
 
+import com.oeindevelopteam.tasknavigator.domain.board.dto.BoardRequestDto;
+import com.oeindevelopteam.tasknavigator.domain.section.entity.Section;
 import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,12 +30,21 @@ public class Board extends Timestamped {
     private List<UserBoardMatches> userBoardMatchesList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<com.oeindevelopteam.tasknavigator.domain.column.entity.Column> columnList = new ArrayList<>();
+    private List<Section> sectionList = new ArrayList<>();
 
     public Board(String boardName, String info) {
 
         this.boardName = boardName;
         this.info = info;
+
+    }
+
+    public Board updateBoard(BoardRequestDto boardRequestDto){
+
+        this.boardName = boardRequestDto.getBoardName();
+        this.info = boardRequestDto.getInfo();
+
+        return this;
 
     }
 

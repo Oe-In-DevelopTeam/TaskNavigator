@@ -24,8 +24,6 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath boardName = createString("boardName");
 
-    public final ListPath<com.oeindevelopteam.tasknavigator.domain.column.entity.Column, com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn> columnList = this.<com.oeindevelopteam.tasknavigator.domain.column.entity.Column, com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn>createList("columnList", com.oeindevelopteam.tasknavigator.domain.column.entity.Column.class, com.oeindevelopteam.tasknavigator.domain.column.entity.QColumn.class, PathInits.DIRECT2);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -35,6 +33,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
+    public final ListPath<com.oeindevelopteam.tasknavigator.domain.section.entity.Section, com.oeindevelopteam.tasknavigator.domain.section.entity.QSection> sectionList = this.<com.oeindevelopteam.tasknavigator.domain.section.entity.Section, com.oeindevelopteam.tasknavigator.domain.section.entity.QSection>createList("sectionList", com.oeindevelopteam.tasknavigator.domain.section.entity.Section.class, com.oeindevelopteam.tasknavigator.domain.section.entity.QSection.class, PathInits.DIRECT2);
 
     public final ListPath<UserBoardMatches, QUserBoardMatches> userBoardMatchesList = this.<UserBoardMatches, QUserBoardMatches>createList("userBoardMatchesList", UserBoardMatches.class, QUserBoardMatches.class, PathInits.DIRECT2);
 
