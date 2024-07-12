@@ -48,7 +48,7 @@ public class Card extends Timestamped {
   private Set<CardTagMatches> tagMatches;
 
   @ManyToOne
-  @JoinColumn(name = "'column'")
+  @JoinColumn(name = "section_id")
   private Section section;
 
   public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
