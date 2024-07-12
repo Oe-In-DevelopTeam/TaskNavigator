@@ -14,8 +14,10 @@ public enum ErrorCode {
   USER_NOT_FOUND(404, "해당 유저를 찾을 수 없습니다."),
   ROLE_NOT_FOUND(404, "해당 역할을 찾을 수 없습니다."),
   BOARD_NOT_FOUND(404, "해당 보드를 찾을 수 없습니다."),
+  SECTION_NOT_FOUND(404, "해당 컬럼을 찾을 수 없습니다."),
   REQUIRE_BOARD_NAME(404, "보드 이름을 입력해주세요."),
-  REQUIRE_BOARD_INFO(404, "한줄 소개를 입력해주세요.");
+  REQUIRE_BOARD_INFO(404, "한줄 소개를 입력해주세요."),
+  DUPLICATE_STATUS(400, "중복된 상태입니다.");
 
   private int status;
   private String message;
