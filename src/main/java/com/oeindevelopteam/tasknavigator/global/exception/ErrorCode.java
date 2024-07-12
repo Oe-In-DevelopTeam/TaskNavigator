@@ -18,7 +18,8 @@ public enum ErrorCode {
   SECTION_STATUS_NOT_FOUND(404, "해당 컬럼 상태를 찾을 수 없습니다."),
   REQUIRE_BOARD_NAME(404, "보드 이름을 입력해주세요."),
   REQUIRE_BOARD_INFO(404, "한줄 소개를 입력해주세요."),
-  DUPLICATE_STATUS(400, "중복된 상태입니다.");
+  DUPLICATE_STATUS(400, "중복된 상태입니다."),
+  ALREADY_HAS_ACCESS(404, "해당 사용자는 이미 권한이 있습니다.");
 
   private int status;
   private String message;
