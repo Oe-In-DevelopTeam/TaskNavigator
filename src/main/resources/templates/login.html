@@ -7,14 +7,17 @@
   <link rel="stylesheet" type="text/css" href="/css/login.css">
 </head>
 <body>
-<form id="login-container">
+<form id="login-container" method="post" action="http://localhost:8080/users/login">
   <h2>LOGIN</h2>
-  <input id="userId" type="text" placeholder="ID">
-  <input id="userPassword" type="password" placeholder="PW">
+  <input id="userId" name="userId" type="text" placeholder="ID">
+  <input id="userPassword" name="password" type="password" placeholder="PW">
   <div class="button-container">
     <button onclick="window.open('http://localhost:8080/users/signup-page')">SIGNUP</button>
     <button type="submit">LOGIN</button>
   </div>
 </form>
+
+<script src="/js/login.js"></script>
+
 </body>
 </html>
