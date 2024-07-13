@@ -21,7 +21,10 @@ public enum ErrorCode {
   DUPLICATE_STATUS(400, "중복된 상태입니다."),
   ALREADY_HAS_ACCESS(404, "해당 사용자는 이미 권한이 있습니다."),
   ALREADY_EXIST_USER(400, "해당 사용자는 이미 존재합니다."),
-  ALREADY_EXIST_MANAGER(400, "관리자 권한을 가진 사용자가 이미 존재합니다.");
+  ALREADY_EXIST_MANAGER(400, "관리자 권한을 가진 사용자가 이미 존재합니다."),
+  EXPIRED_TOKEN(400, "만료된 토큰 입니다."),
+  INVALID_TOKEN(400, "유효하지 않은 토큰 입니다.");
+
 
   private int status;
   private String message;
