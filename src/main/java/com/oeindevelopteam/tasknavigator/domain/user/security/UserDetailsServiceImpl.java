@@ -2,6 +2,8 @@ package com.oeindevelopteam.tasknavigator.domain.user.security;
 
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRepository;
+import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
+import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
-    User user = userRepository.findByUserId(userId).orElseThrow( () -> new UsernameNotFoundException("아이디, 비밀번호를 확인해주세요."));
+    User user = userRepository.findByUserIdWithRoles(userId).orElseThrow(() -> new CustomException(
+        ErrorCode.USER_NOT_FOUND));
 
     return new UserDetailsImpl(user);
   }

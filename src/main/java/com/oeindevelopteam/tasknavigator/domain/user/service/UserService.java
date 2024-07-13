@@ -4,6 +4,7 @@ import com.oeindevelopteam.tasknavigator.domain.user.dto.UserSignupRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRole;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRepository;
+import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleMatchesRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.security.UserDetailsImpl;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
@@ -20,29 +21,32 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserRoleRepository userRoleRepository;
   private final PasswordEncoder passwordEncoder;
+  private final UserRoleMatchesRepository userRoleMatchesRepository;
 
   @Value("${admin.token}")
   private String adminToken;
 
   public UserService(UserRepository userRepository, UserRoleRepository userRoleRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder, UserRoleMatchesRepository userRoleMatchesRepository) {
     this.userRepository = userRepository;
     this.userRoleRepository = userRoleRepository;
     this.passwordEncoder = passwordEncoder;
+    this.userRoleMatchesRepository = userRoleMatchesRepository;
   }
 
   @Transactional
   public void signup(UserSignupRequestDto requestDto) {
 
     userRepository.findByUserId(requestDto.getUserId()).ifPresent((val) -> {
-      throw new CustomException(ErrorCode.BAD_REQUEST);
+      throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
     });
 
-    String roleName;
-    if (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken)) {
-      roleName = "MANAGER";
-    } else {
-      roleName = "USER";
+    String roleName =
+        (requestDto.getAdminToken() != null && requestDto.getAdminToken().equals(adminToken))
+            ? "MANAGER" : "USER";
+
+    if ("MANAGER".equals(roleName) && userRepository.findManager().isPresent()) {
+      throw new CustomException(ErrorCode.ALREADY_EXIST_MANAGER);
     }
 
     UserRole userRole = userRoleRepository.findByRole(roleName)
@@ -54,21 +58,19 @@ public class UserService {
     user.encrytionPassword(encryptionPassword);
 
     userRepository.save(user);
+
   }
 
   @Transactional
   public void logout() {
-
-    User user = getUser();
-    user.updateRefreshToken(null);
-
-  }
-
-  public User getUser() {
     UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
         .getAuthentication().getPrincipal();
-    return userRepository.findByUserId(userDetails.getUsername())
+
+    User user = userRepository.findByUserIdWithRoles(userDetails.getUsername())
         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+    user.updateRefreshToken(null);
+    userRepository.save(user);
   }
 
 }

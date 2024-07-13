@@ -34,32 +34,25 @@ public class User {
   @Column
   private String role;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "user")
   private List<UserRoleMatches> userRoleMatches = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UserBoardMatches> userBoardMatchesList = new ArrayList<>();
-
-  @ElementCollection
-  private List<String> passwordList = new LinkedList<>();
-  private static final int PASSWORD_LENGTH = 3;
 
   public User(UserSignupRequestDto requestDto, UserRole userRole) {
     this.userId = requestDto.getUserId();
     this.password = requestDto.getPassword();
     this.username = requestDto.getUsername();
     this.role = userRole.getRole();
-    this.userRoleMatches.add(new UserRoleMatches(this, userRole));
+
+    UserRoleMatches userRoleMatch = new UserRoleMatches(this, userRole);
+    this.userRoleMatches.add(userRoleMatch);
+    userRole.getUserRoleMatches().add(userRoleMatch);
   }
 
   public void encrytionPassword(String encrytionPassword) {
     this.password = encrytionPassword;
-
-    if (passwordList.size() >= PASSWORD_LENGTH) {
-      passwordList.remove(0);
-    }
-
-    passwordList.add(encrytionPassword);
   }
 
   public UserRole getUserRole() {
