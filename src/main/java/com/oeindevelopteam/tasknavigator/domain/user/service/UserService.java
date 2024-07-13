@@ -85,7 +85,6 @@ public class UserService {
     userRepository.save(user);
   }
 
-  @Transactional
   public HttpHeaders refreshToken(HttpServletRequest request) {
     String token = getRefreshToken(request);
 
