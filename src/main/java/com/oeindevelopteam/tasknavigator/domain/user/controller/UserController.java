@@ -3,7 +3,9 @@ package com.oeindevelopteam.tasknavigator.domain.user.controller;
 import com.oeindevelopteam.tasknavigator.domain.user.dto.UserSignupRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.user.service.UserService;
 import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/users")
@@ -51,6 +52,14 @@ public class UserController {
     userService.logout();
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @PostMapping("token/refresh")
+  public ResponseEntity<CommonResponseDto> refreshToken(HttpServletRequest request) {
+    HttpHeaders headers = userService.refreshToken(request);
+    CommonResponseDto responseDto = new CommonResponseDto(200, "토큰 재발급에 성공했습니다.", null);
+
+    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(responseDto);
   }
 
 }
