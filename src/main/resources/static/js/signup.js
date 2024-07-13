@@ -24,6 +24,7 @@ function handlerSignup(event) {
     return response.json();
   })
   .then(data => {
+    console.log(data.message);
     window.location.href = 'http://localhost:8080/users/login-page';
   })
   .catch(error => {

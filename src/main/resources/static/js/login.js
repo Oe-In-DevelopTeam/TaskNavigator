@@ -1,5 +1,6 @@
 const userId = document.getElementById('userId');
 const password = document.getElementById("userPassword");
+const loginButton = document.querySelector('button[type="submit"]');
 
 function handlerLogin(event) {
   event.preventDefault();
@@ -28,6 +29,4 @@ function handlerLogin(event) {
   });
 }
 
-// 로그인 버튼 클릭 시 handlerLogin 함수 호출
-const loginButton = document.querySelector('button[type="submit"]');
 loginButton.addEventListener('click', handlerLogin);
