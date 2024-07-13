@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   @Override
   protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-    securityResponse.sendResponse(response, HttpStatus.BAD_REQUEST, "아이디, 비밀번호를 확인해주세요.");
+    securityResponse.sendResponse(response, HttpStatus.UNAUTHORIZED, "아이디, 비밀번호를 확인해주세요.");
   }
 
   private void sendLoginResponse(HttpServletResponse response, User user, String accessToken, String refreshToken) throws IOException {

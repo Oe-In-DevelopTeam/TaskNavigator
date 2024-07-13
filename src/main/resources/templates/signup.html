@@ -7,12 +7,15 @@
   <link rel="stylesheet" type="text/css" href="/css/signup.css">
 </head>
 <body>
-<form id="signup-container">
+<form id="signup-container" method="post">
   <h2>SIGN UP</h2>
-  <input id="userNickname" type="text" placeholder="Nick Name">
-  <input id="userId" type="text" placeholder="ID">
-  <input id="userPassword" type="password" placeholder="PW">
-  <button type="submit">SIGNUP</button>
+  <input name="username" id="userNickname" type="text" placeholder="Nick Name">
+  <input name="userId" id="userId" type="text" placeholder="ID">
+  <input name="password" id="userPassword" type="password" placeholder="PW">
+  <button id="signup-btn" type="submit">SIGNUP</button>
 </form>
+
+<script src="/js/signup.js"></script>
+
 </body>
 </html>
