@@ -10,6 +10,7 @@ public class CardResponseDto {
 
   private Long cardId;
   private Long userId;
+  private Long boardId;
   private Long columnId;
   private String title;
   private String content;
@@ -20,6 +21,7 @@ public class CardResponseDto {
   public CardResponseDto(Card card) {
     this.cardId = card.getId();
     this.userId = card.getUserId();
+    this.boardId = card.getBoardId();
     this.columnId = card.getColumnId();
     this.title = card.getTitle();
     this.content = card.getContent();

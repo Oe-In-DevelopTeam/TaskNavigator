@@ -1,5 +1,7 @@
 package com.oeindevelopteam.tasknavigator.domain.card.service;
 
+import com.oeindevelopteam.tasknavigator.domain.board.entity.UserBoardMatches;
+import com.oeindevelopteam.tasknavigator.domain.board.repository.UserBoardMatchesRepository;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardTagEditRequestDto;
@@ -8,6 +10,7 @@ import com.oeindevelopteam.tasknavigator.domain.card.entity.CardTag;
 import com.oeindevelopteam.tasknavigator.domain.card.entity.CardTagMatches;
 import com.oeindevelopteam.tasknavigator.domain.card.repository.CardRepository;
 import com.oeindevelopteam.tasknavigator.domain.card.repository.CardTagRepository;
+import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
 import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
 import java.util.ArrayList;
@@ -27,14 +30,15 @@ public class CardService {
 
   private final CardRepository cardRepository;
   private final CardTagRepository cardTagRepository;
+  private final UserBoardMatchesRepository userBoardMatchesRepository;
 
   @Transactional
-  public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long columnId) {
+  public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long boardId, Long columnId) {
 
     // TODO: 유저아이디 넣어주는거 필요
     Long userId = 1L;
 
-    Card card = new Card(cardRequestDto, columnId, userId);
+    Card card = new Card(cardRequestDto, boardId, columnId, userId);
 
     cardRepository.save(card);
 
@@ -134,5 +138,110 @@ public class CardService {
   public CardTag findCardTagByName(String cardTagName) {
     return cardTagRepository.findByName(cardTagName)
         .orElseThrow(() -> new IllegalArgumentException("d"));
+  }
+
+  public List<CardResponseDto> getCardsByTag(String tag, User user) {
+
+    List<Long> boardIds = getInvitedBoardIds(user.getId());
+
+    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
+
+    List<Card> resultCards = new ArrayList<>();
+
+    for (List<Card> cards : cardLists) {
+      for (Card card : cards) {
+        Set<CardTagMatches> cardTagMatches = card.getTagMatches();
+
+        List<String> tagNames = cardTagMatches.stream()
+            .map(cardTagMatch -> cardTagMatch.getTag().getName())
+            .collect(Collectors.toList());
+
+        if (tagNames.contains(tag)) {
+          resultCards.add(card);
+        }
+      }
+    }
+
+    if (resultCards.isEmpty()) {
+      throw new CustomException(ErrorCode.CARD_NOT_FOUND);
+    }
+
+    return resultCards.stream().map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+  }
+
+
+  public List<CardResponseDto> getCardsByManager(String manager, User user) {
+    List<Long> boardIds = getInvitedBoardIds(user.getId());
+    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
+
+    List<Card> resultCards = new ArrayList<>();
+
+    for (List<Card> cards : cardLists) {
+      for (Card card : cards) {
+        if (card.getManager() != null && card.getManager().equals(manager)) {
+          resultCards.add(card);
+        }
+      }
+    }
+
+    if (resultCards.isEmpty()) {
+      throw new CustomException(ErrorCode.CARD_NOT_FOUND);
+    }
+
+    return resultCards.stream().map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+  }
+
+  public List<CardResponseDto> getAllCardsByInvited(User user) {
+    List<Long> boardIds = getInvitedBoardIds(user.getId());
+    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
+
+    List<Card> resultCards = new ArrayList<>();
+
+    for (List<Card> cards : cardLists) {
+      for (Card card : cards) {
+        resultCards.add(card);
+      }
+    }
+
+    if (resultCards.isEmpty()) {
+      throw new CustomException(ErrorCode.CARD_NOT_FOUND);
+    }
+
+    return resultCards.stream().map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+  }
+
+
+  private List<Long> getInvitedBoardIds(Long userId) {
+    // TODO: 오류 정리되면 삭제 할 예정
+    // List<UserBoardMatches> userBoardMatches = user.getUserBoardMatchesList();
+
+    // 본인이 초대받은 모든 보드의 카드 조회
+    List<UserBoardMatches> userBoardMatches = userBoardMatchesRepository.findByUserId(userId)
+        .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+    // 보드 아이디들 받아오기
+    List<Long> boardIds = userBoardMatches.stream()
+        .map(userBoardMatch -> userBoardMatch.getBoard().getId())
+        .collect(Collectors.toList());
+
+    return boardIds;
+  }
+
+  private List<List<Card>> getCardListsByBoardIds(List<Long> boardIds) {
+    List<List<Card>> cardLists = new ArrayList<>();
+
+    for (Long boardId : boardIds) {
+      List<Card> cards = cardRepository.findByBoardId(boardId);
+
+      if (!cards.isEmpty()) {
+        cardLists.add(cards);
+      }
+    }
+
+    if (cardLists.isEmpty()) {
+      throw new CustomException(ErrorCode.CARD_NOT_FOUND);
+    }
+
+    return cardLists;
   }
 }
