@@ -30,6 +30,9 @@ public class Card extends Timestamped {
   private Long userId;
 
   @Column(nullable = false)
+  private Long boardId;
+
+  @Column(nullable = false)
   private Long columnId;
 
   @Column(nullable = false)
@@ -51,8 +54,9 @@ public class Card extends Timestamped {
   @JoinColumn(name = "section_id")
   private Section section;
 
-  public Card(CardRequestDto cardRequestDto, Long columnId, Long userId) {
+  public Card(CardRequestDto cardRequestDto, Long boardId, Long columnId, Long userId) {
     this.userId = userId;
+    this.boardId = boardId;
     this.columnId = columnId;
     this.title = cardRequestDto.getTitle();
     this.content = cardRequestDto.getContent();
