@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="/css/nav.css">
   <link rel="stylesheet" type="text/css" href="/css/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
   <nav>
@@ -36,12 +37,12 @@
     </div>
 
     <div class="column-container">
-
       <div class="column" draggable="true">
         <div class="column-status-container">
           <span class="column-status">before</span>
+          <input type="text" class="edit-column-input" style="display:none;">
           <div class="btn-container">
-            <a href="http://localhost:8080/home/cards/edit" class="edit-column">
+            <a href="#" class="edit-column">
               <i class="fa-regular fa-pen-to-square"></i>
             </a>
             <a href="#" class="create-card">
@@ -53,29 +54,9 @@
           </div>
         </div>
         <div class="card-container">
-          <a href="http://localhost:8080/home/cards" class="card" draggable="true">Card Title</a>
-        </div>
-      </div>
-
-      <div class="column" draggable="true">
-        <div class="column-status-container">
-          <span class="column-status">before</span>
-          <div class="btn-container">
-            <a href="#" class="create-card">
-              <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="#" class="remove-column">
-              <i class="fa-solid fa-xmark"></i>
-            </a>
-          </div>
-        </div>
-        <div class="card-container">
-          <a href="#" class="card" draggable="true">Card Title</a>
-          <a href="#" class="card" draggable="true">Card Title</a>
           <a href="#" class="card" draggable="true">Card Title</a>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -91,9 +72,9 @@
     </div>
 
     <div class="column-container">
-
       <div class="column" draggable="true">
         <div class="column-status-container">
+          <input type="text" class="edit-column-input" style="display:none;">
           <span class="column-status">before</span>
           <div class="btn-container">
             <a href="#" class="edit-column">
@@ -111,31 +92,12 @@
           <a href="#" class="card" draggable="true">Card Title</a>
         </div>
       </div>
-
-      <div class="column" draggable="true">
-        <div class="column-status-container">
-          <span class="column-status">before</span>
-          <div class="btn-container">
-            <a href="#" class="create-card">
-              <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="#" class="remove-column">
-              <i class="fa-solid fa-xmark"></i>
-            </a>
-          </div>
-        </div>
-        <div class="card-container">
-          <a href="#" class="card" draggable="true">Card Title</a>
-          <a href="#" class="card" draggable="true">Card Title</a>
-          <a href="#" class="card" draggable="true">Card Title</a>
-        </div>
-      </div>
-
     </div>
   </div>
 
   <script src="/js/index.js"></script>
   <script src="/js/create-board.js"></script>
+  <script src="/js/drag-drop.js"></script>
 
 </body>
 </html>
