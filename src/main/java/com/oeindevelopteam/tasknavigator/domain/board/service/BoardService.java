@@ -179,6 +179,11 @@ public class BoardService {
             }
         }
 
+        // 자신을 초대할 수 없다.
+        if(user.getId().equals(invitedUserId)){
+            throw new CustomException(ErrorCode.INVITATION_NOT_ALLOWED);
+        }
+
         // invitedUserId 로 Role 권한 체크
         User invitedUser = userRepository.findById(invitedUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
