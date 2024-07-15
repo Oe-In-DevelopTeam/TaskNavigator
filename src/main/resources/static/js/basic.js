@@ -1,9 +1,7 @@
 const host = 'http://' + window.location.host;
-let targetId;
-let folderTargetId;
+const boardsContainer = document.querySelector('.boards-container');
 
 $(document).ready(function () {
-  const boardsContainer = document.querySelector('.boards-container');
 
   const auth = getToken();
 
@@ -59,9 +57,7 @@ $(document).ready(function () {
         <i class="fa-solid fa-plus"></i>
       </a>
     </div>
-    <div class="column-container">
-      
-    </div>
+    <div class="column-container"></div>
   </div>
   `;
 
@@ -109,45 +105,56 @@ $(document).ready(function () {
           }
         }
       }
-
-      // $('#fragment').replaceWith(fragment);
     });
 
   })
   .fail(function (jqXHR, textStatus) {
     // logout();
   });
-
-  // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.
-  // $('#query').on('keypress', function (e) {
-  //   if (e.key == 'Enter') {
-  //     execSearch();
-  //   }
-  // });
-  // $('#close').on('click', function () {
-  //   $('#container').removeClass('active');
-  // })
-  // $('#close2').on('click', function () {
-  //   $('#container2').removeClass('active');
-  // })
-  // $('.nav div.nav-see').on('click', function () {
-  //   $('div.nav-see').addClass('active');
-  //   $('div.nav-search').removeClass('active');
-  //
-  //   $('#see-area').show();
-  //   $('#search-area').hide();
-  // })
-  // $('.nav div.nav-search').on('click', function () {
-  //   $('div.nav-see').removeClass('active');
-  //   $('div.nav-search').addClass('active');
-  //
-  //   $('#see-area').hide();
-  //   $('#search-area').show();
-  // })
-  //
-  // $('#see-area').show();
-  // $('#search-area').hide();
 })
+
+boardsContainer.addEventListener('click', (event) => {
+  let columnTemplate = `
+ <div class="column" draggable="true">
+        <div class="column-status-container">
+          <span class="column-status"></span>
+          <input type="text" class="edit-column-input hidden">
+          <div class="btn-container">
+            <a href="#" class="edit-column">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </a>
+            <a href="#" class="create-card">
+              <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="#" class="remove-column">
+              <i class="fa-solid fa-xmark"></i>
+            </a>
+          </div>
+        </div>
+        <div class="card-container"></div>
+      </div> 
+  `;
+  if (event.target.closest('.create-column')) {
+    const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
+    if (columnContainer) {
+      columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
+    }
+  }
+
+  if (event.target.closest('.remove-column')) {
+    const columnToRemove = event.target.closest('.column');
+    if (columnToRemove) {
+      columnToRemove.remove();
+    }
+  }
+
+  if (event.target.closest('.edit-column')) {
+    const columnToEdit = event.target.closest('.column').querySelector('.edit-column-input');
+    if (columnToEdit) {
+      columnToEdit.classList.remove('hidden');
+    }
+  }
+});
 
 function getToken() {
 
