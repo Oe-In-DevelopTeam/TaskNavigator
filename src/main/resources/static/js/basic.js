@@ -1,3 +1,13 @@
+import {
+  createNewColumn,
+  initializeSortableCardContainer,
+  initializeSortableColumns,
+  deleteColumnFromServer,
+  deleteCardFromServer,
+  saveColumnsToServer,
+  createCard
+} from './drag-drop.js';
+
 const host = 'http://' + window.location.host;
 let targetId;
 let folderTargetId;
@@ -53,10 +63,9 @@ $(document).ready(function () {
       console.log(res.data[0].length);
       console.log(res.data[0].sections.length);
 
-
       for (let i = 0; i < res.data.length; i++) {
         let boardTemplate = `
-      <div class="board-container">
+      <div class="board-container" data-board-id="${res.data[i].id}">
     <div class="board-top">
       <div class="board-intro-container">
         <h3>${res.data[i].boardName}</h3>
@@ -76,6 +85,7 @@ $(document).ready(function () {
 
         const currentBoard = boardsContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
         const columnContainer = currentBoard.querySelector('.column-container');
+        const boardId = currentBoard.getAttribute('data-board-id');
 
         console.log(columnContainer);
 
@@ -103,8 +113,8 @@ $(document).ready(function () {
 
           columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
 
-          const currentColumn= columnContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
-          const cardContainer= currentColumn.querySelector('.card-container');
+          const currentColumn = columnContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
+          const cardContainer = currentColumn.querySelector('.card-container');
 
           for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
             let cardTemplate = `
@@ -114,14 +124,67 @@ $(document).ready(function () {
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
           }
         }
+        // "create-column" 버튼에 이벤트 리스너 추가
+        currentBoard.querySelector('.create-column').addEventListener('click',
+            function () {
+              createNewColumn(columnContainer, currentBoard, boardId);
+            });
+
+        initializeSortableColumns(currentBoard, boardId);
+        document.querySelectorAll(".column").forEach((column) => {
+          initializeSortableCardContainer(column, boardId);
+
+          // $('#fragment').replaceWith(fragment);
+        });
       }
-
-      // $('#fragment').replaceWith(fragment);
     });
-
   })
   .fail(function (jqXHR, textStatus) {
     // logout();
+  });
+
+  document.addEventListener('click', function(event) {
+    if (event.target.closest('.remove-column')) {
+      const column = event.target.closest('.column');
+      const columnId = column.getAttribute('data-column-id');
+      column.remove();
+
+      // 컬럼 삭제 from 서버
+      const boardId = column.closest('.board-container').getAttribute('data-board-id');
+      deleteColumnFromServer(columnId, boardId);
+    }
+
+    if (event.target.closest('.edit-column')) {
+      const column = event.target.closest('.column');
+      const statusSpan = column.querySelector('.column-status');
+      const input = column.querySelector('.edit-column-input');
+
+      statusSpan.style.display = 'none';
+      input.style.display = 'inline';
+      input.value = statusSpan.textContent;
+      input.focus();
+
+      input.addEventListener('blur', () => {
+        statusSpan.textContent = input.value;
+        statusSpan.style.display = 'inline';
+        input.style.display = 'none';
+
+        // 서버에 저장
+        const boardId = column.closest('.board-container').getAttribute('data-board-id');
+        saveColumnsToServer(boardId);
+      });
+    }
+
+    if (event.target.closest('.remove-card')) {
+      const card = event.target.closest('.card');
+      const cardId = card.getAttribute('data-card-id');
+      const columnId = card.closest('.column').getAttribute('data-column-id');
+      card.remove();
+
+      // 카드 삭제 from 서버
+      const boardId = card.closest('.board-container').getAttribute('data-board-id');
+      deleteCardFromServer(columnId, cardId, boardId);
+    }
   });
 
   // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.
@@ -153,18 +216,18 @@ $(document).ready(function () {
   //
   // $('#see-area').show();
   // $('#search-area').hide();
-})
+});
 
 function getToken() {
 
   let auth = Cookies.get('Authorization');
 
-  if(auth === undefined) {
+  if (auth === undefined) {
     return '';
   }
 
   // kakao 로그인 사용한 경우 Bearer 추가
-  if(auth.indexOf('Bearer') === -1 && auth !== ''){
+  if (auth.indexOf('Bearer') === -1 && auth !== '') {
     auth = 'Bearer ' + auth;
   }
 
