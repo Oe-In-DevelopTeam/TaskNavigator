@@ -1,3 +1,8 @@
+import {
+  initializeSortableCardContainer,
+  initializeSortableColumns
+} from './drag-drop.js';
+
 const host = 'http://' + window.location.host;
 const boardsContainer = document.querySelector('.boards-container');
 
@@ -98,12 +103,14 @@ $(document).ready(function () {
           for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
             let cardId = res.data[i].sections[j].cards[k].cardId;
             let cardTemplate = `
-            <a href="/boards/${boardId}/columns/${columnId}/cards/${cardId}" class="card" data-board-id="${boardId}" data-column-id="${columnId}" data-card-id="${cardId}" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
+            <a href="/card" class="card" data-board-id="${boardId}" data-column-id="${columnId}" data-card-id="${cardId}" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
             `;
 
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
           }
+          initializeSortableCardContainer(currentColumn, boardId);
         }
+        initializeSortableColumns(currentBoard, boardId);
       }
     });
 
@@ -114,10 +121,22 @@ $(document).ready(function () {
 })
 
 boardsContainer.addEventListener('click', (event) => {
-  let columnTemplate = `
- <div class="column" draggable="true">
+  const boardContainer = event.target.closest('.board-container');
+  const boardId = boardContainer.dataset.boardId;
+
+  if (event.target.closest('.create-column')) {
+    console.log("boardID: " + boardId);
+
+    $.ajax({
+      type: 'POST',
+      url: `/boards/${boardId}/columns`,
+      contentType: "application/json",
+      data: JSON.stringify({status: "New Status", sectionOrder: 0}),
+    }).done(function (res, status, xhr) {
+      let columnTemplate = `
+ <div class="column" data-board-id="${boardId}" data-column-id="${res.data.id}" draggable="true">
         <div class="column-status-container">
-          <span class="column-status"></span>
+          <span class="column-status">New Status</span>
           <input type="text" class="edit-column-input hidden">
           <div class="btn-container">
             <a href="#" class="edit-column">
@@ -134,43 +153,98 @@ boardsContainer.addEventListener('click', (event) => {
         <div class="card-container"></div>
       </div> 
   `;
-  if (event.target.closest('.create-column')) {
-    const boardContainer = event.target.closest('.board-container');
-    const boardId = boardContainer.dataset.boardId;
-    console.log("boardID: " + boardId);
-    const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
-    // $.ajax({
-    //   type: 'POST',
-    //   url: `/boards/${boardId}/columns`,
-    //   // data: JSON.stringify({status: username, sectionOrder: password}),
-    // }).done(function (res, status, xhr) {
-    //
-    // })
-    // .fail(function (jqXHR, textStatus) {
-    // });
+      const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
+      if (columnContainer) {
+        columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
+      }
 
-    if (columnContainer) {
-      columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
-    }
+      const currentColumn = columnContainer.lastElementChild;
+      initializeSortableCardContainer(currentColumn, boardId);
+      initializeSortableColumns(boardContainer, boardId);
+    })
+    .fail(function (jqXHR, textStatus) {
+    });
+
   }
 
   if (event.target.closest('.remove-column')) {
     const columnToRemove = event.target.closest('.column');
+    const columnId = columnToRemove.dataset.columnId;
+
+    const isConfirmed = confirm('정말로 삭제하시겠습니까?');
+    if (!isConfirmed) {
+      return;
+    }
+
     if (columnToRemove) {
       columnToRemove.remove();
     }
+
+    $.ajax({
+      type: 'DELETE',
+      url: `/boards/${boardId}/columns/${columnId}`,
+    }).done(function (res, status, xhr) {
+
+    })
+    .fail(function (jqXHR, textStatus) {
+    });
   }
 
   if (event.target.closest('.edit-column')) {
-    const columnToEdit = event.target.closest('.column').querySelector('.edit-column-input');
-    if (columnToEdit) {
-      columnToEdit.classList.remove('hidden');
+    const editColumn = event.target.closest('.column');
+    const columnId = editColumn.dataset.columnId;
+    const columnStatus = event.target.closest('.column').querySelector('.column-status');
+    if (columnStatus) {
+      const currentText = columnStatus.textContent.trim();
+
+      columnStatus.innerHTML = `<input type="text" class="edit-column-input" value="${currentText}" />`;
+
+      const inputField = columnStatus.querySelector('.edit-column-input');
+      inputField.focus();
+
+      // 엔터 키 입력 처리
+      inputField.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          // 엔터 키가 눌렸을 때 처리할 내용
+          const newValue = inputField.value.trim();
+          columnStatus.innerHTML = newValue; // 수정된 내용을 텍스트로 변경
+
+          $.ajax({
+            type: 'PUT',
+            url: `/boards/${boardId}/columns/${columnId}`,
+            contentType: "application/json",
+            data: JSON.stringify({status: newValue, sectionOrder: 0}),
+          }).done(function (res, status, xhr) {
+
+          })
+          .fail(function (jqXHR, textStatus) {
+          });
+
+          // 저장 후 이벤트 리스너 제거 (선택사항)
+          inputField.removeEventListener('keydown', handleEnterKey);
+        }
+      });
     }
+
+    // console.log(columnToEdit.value);
+    //
+    // if (columnToEdit.value != '') {
+    //   $.ajax({
+    //     type: 'PUT',
+    //     url: `/boards/${boardId}/columns/${columnId}`,
+    //     contentType: "application/json",
+    //     data: JSON.stringify({status: "New Status", sectionOrder: 0}),
+    //   }).done(function (res, status, xhr) {
+    //
+    //   })
+    //   .fail(function (jqXHR, textStatus) {
+    //   });
+    // }
   }
 
   if (event.target.closest('.create-card')) {
     let cardTemplate = `
-   <a href="#" class="card" draggable="true">New Card</a> 
+   <a href="/card" class="card" draggable="true">New Card</a> 
     `;
     const cardContainer = event.target.closest('.column').querySelector('.card-container');
     if (cardContainer) {

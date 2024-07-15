@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SectionController {
 
   private final SectionService sectionService;
-
   @PostMapping()
   ResponseEntity<CommonResponseDto> createSection(@PathVariable Long boardId, @RequestBody SectionRequestDto requestDto) {
 
@@ -38,9 +37,16 @@ public class SectionController {
         .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 삭제되었습니다.", null));
   }
 
+//  @PutMapping("/{columnId}")
+//  ResponseEntity<CommonResponseDto> updateSection(@PathVariable Long boardId, @PathVariable Long columnId, @RequestBody SectionRequestDto requestDto) {
+//    sectionService.updateSection(boardId, columnId, requestDto);
+//    return ResponseEntity.status(HttpStatus.OK)
+//        .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 수정되었습니다.", null));
+//  }
+
   @PutMapping("/{columnId}")
-  ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order) {
-    sectionService.moveSection(columnId, order);
+  ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order, @RequestParam String status) {
+    sectionService.moveSection(columnId, order, status);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 이동되었습니다.", null));
   }

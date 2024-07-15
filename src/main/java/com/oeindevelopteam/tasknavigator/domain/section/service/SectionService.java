@@ -2,6 +2,7 @@ package com.oeindevelopteam.tasknavigator.domain.section.service;
 
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.board.repository.BoardRepository;
+import com.oeindevelopteam.tasknavigator.domain.board.service.BoardService;
 import com.oeindevelopteam.tasknavigator.domain.section.dto.SectionRequestDto;
 import com.oeindevelopteam.tasknavigator.domain.section.dto.SectionResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.section.entity.Section;
@@ -21,22 +22,18 @@ public class SectionService {
 
   private final SectionRepository sectionRepository;
   private final SectionStatusRepository sectionStatusRepository;
-  private final BoardRepository boardRepository; // TODO board Repository에 id로 객체 가져오는 코드가 생성되면 수정 예정
+  private final BoardService boardService;
 
   @Transactional
   public SectionResponseDto createSection(Long boardId, SectionRequestDto requestDto) {
-
-    Optional<SectionStatus> status = sectionStatusRepository.findByStatus(requestDto.getStatus());
-    if (status.isPresent()) {
-      throw new CustomException(ErrorCode.DUPLICATE_STATUS);
+    if (!requestDto.getStatus().equals("New Status")) {
+      Optional<SectionStatus> status = sectionStatusRepository.findByStatus(requestDto.getStatus());
+      if (status.isPresent()) {
+        throw new CustomException(ErrorCode.DUPLICATE_STATUS);
+      }
     }
 
-    // 보드 생성과 BoardService에 getBoard가 완료되면 아래 코드로 바꿀 예정
-//    Board board = boardService.getBoard(boardId);
-
-    // 보드 생성이 되지 않아 임시로 저장하는 코드
-    Board board = new Board("testBoard", "test");
-    boardRepository.save(board);
+    Board board = boardService.getBoard(boardId);
 
     SectionStatus newStatus = new SectionStatus(requestDto.getStatus(), board);
     sectionStatusRepository.save(newStatus);
@@ -51,22 +48,40 @@ public class SectionService {
   public void deleteSection(Long boardId, Long columnId) {
     Section section = findByIdReturnSection(columnId);
 
-    // TODO: 이 부분 역시 BoardService에 getBoard가 구현되면 바뀔 부분
-    Board board = boardRepository.findById(boardId).orElseThrow(() ->
-        new CustomException(ErrorCode.BOARD_NOT_FOUND));
+    Board board = boardService.getBoard(boardId);
 
-    SectionStatus status = sectionStatusRepository.findByStatusAndBoard(section.getStatus(), board).orElseThrow(() ->
-        new CustomException(ErrorCode.SECTION_STATUS_NOT_FOUND));
+    if (!section.getStatus().equals("New Status")) {
+      SectionStatus status = sectionStatusRepository.findByStatusAndBoard(section.getStatus(), board).orElseThrow(() ->
+          new CustomException(ErrorCode.SECTION_STATUS_NOT_FOUND));
+      sectionStatusRepository.delete(status);
+    }
 
     sectionRepository.delete(section);
-    sectionStatusRepository.delete(status);
+  }
+
+  public void updateSection(Long boardId, Long columnId, SectionRequestDto requestDto) {
+//    if (!requestDto.getStatus().equals("New Status")) {
+//      Optional<SectionStatus> status = sectionStatusRepository.findByStatus(requestDto.getStatus());
+//      if (status.isPresent()) {
+//        sectionStatusRepository.delete(status.get());
+//      }
+//    }
+//
+//    Section section = findByIdReturnSection(columnId);
+//    section.updateSection(requestDto);
+//    sectionRepository.save(section);
+//
+//    Section saveSection = sectionRepository.save(newSection);
+//
+//    return new SectionResponseDto(saveSection);
   }
 
   @Transactional
-  public void moveSection(Long columnId, int order) {
+  public void moveSection(Long columnId, int order, String status) {
     Section section = findByIdReturnSection(columnId);
 
     section.updateOrder(order);
+    section.updateStatus(status);
 
     sectionRepository.save(section);
   }
@@ -76,8 +91,10 @@ public class SectionService {
         new CustomException(ErrorCode.SECTION_NOT_FOUND));
   }
 
+
   public Section getSerction(Long sectionId) {
     return sectionRepository.findById(sectionId).orElseThrow(() ->
         new CustomException(ErrorCode.SECTION_NOT_FOUND));
   }
+
 }

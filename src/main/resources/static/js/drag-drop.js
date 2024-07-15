@@ -1,100 +1,79 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const columnContainer = document.querySelector(".column-container");
-  const createBoardBtn = document.querySelector(".create-board");
-  const bordContainer = document.querySelector(".board-container");
+export function initializeSortableCardContainer(column, boardId) {
+  new Sortable(column.querySelector(".card-container"), {
+    group: "cards",
+    animation: 150,
+    ghostClass: "blue-background-class",
+    onEnd: function (evt) {
+      const target = evt.to;
+      const from = evt.from;
+      const item = evt.item;
 
-  function initializeSortableCardContainer(column) {
-    new Sortable(column.querySelector(".card-container"), {
-      group: "cards",
-      animation: 150,
-      ghostClass: "blue-background-class",
-      onEnd: function (evt) {
-        const target = evt.to;
-        const from = evt.from;
-        const item = evt.item;
+      if (target && target.classList && !target.classList.contains("card-container")) {
+        from.appendChild(item);
+      } else {
+        // 서버에 저장
+        saveColumnsToServer(boardId);
+      }
+    },
+  });
+}
 
-        if (
-            target &&
-            target.classList &&
-            !target.classList.contains("card-container")
-        ) {
-          from.appendChild(item);
-          // api 호출(카드용)
-        }
-      },
+export function initializeSortableColumns(board, boardId) {
+  new Sortable(board.querySelector(".column-container"), {
+    group: "columns",
+    animation: 150,
+    ghostClass: "blue-background-class",
+    onEnd: function (evt) {
+      const target = evt.to;
+      const from = evt.from;
+      const item = evt.item;
+
+      if (target && target.classList && !target.classList.contains("column-container")) {
+        from.appendChild(item);
+      } else {
+        const columnId = item.getAttribute('data-column-id');
+        const newPosition = [...target.children].indexOf(item);
+
+        updateColumnPosition(columnId, newPosition, boardId);
+        console.log("컬럼 이동이 완료되었습니다.")
+      }
+    },
+  });
+}
+
+function saveColumnsToServer(boardId) {
+  const columns = [];
+  document.querySelectorAll(".column").forEach(column => {
+    const columnId = column.getAttribute('data-column-id');
+    const status = column.querySelector('.column-status').textContent;
+    const cards = [];
+    column.querySelectorAll('.card').forEach(card => {
+      cards.push({
+        id: card.getAttribute('data-card-id'),
+        title: card.textContent
+      });
     });
-  }
-
-  function initializeSortableColumns(board) {
-    console.log("string!!");
-    new Sortable(board.querySelector(".column-container"), {
-      group: "columns",
-      animation: 150,
-      // handle: ".board-top",
-      // draggable: ".column",
-      ghostClass: "blue-background-class",
-      onEnd: function (evt) {
-        const target = evt.to;
-        const from = evt.from;
-        const item = evt.item;
-        console.log("Column moved from:", from, "to:", target, "item:", item);
-
-        if (
-            target &&
-            target.classList &&
-            !target.classList.contains("column-container")
-        ) {
-          console.log("String!");
-          from.appendChild(item);
-          // api 호출(컬럼용)
-        }
-      },
-    });
-  }
-
-  document.querySelectorAll(".column").forEach((column) => {
-    initializeSortableCardContainer(column);
+    columns.push({ id: columnId, status: status, cards: cards });
   });
 
-  initializeSortableColumns(bordContainer);
-
-  function createNewColumn() {
-    const newColumn = document.createElement("div");
-    newColumn.classList.add("column");
-    newColumn.innerHTML = `
-      <div class="board-top">
-        <div class="board-intro-container">
-          <h3>New Board Title</h3>
-          <p>This is a new board introduction.</p>
-        </div>
-        <a href="#" class="create-column">
-          <i class="fa-solid fa-plus"></i>
-        </a>
-      </div>
-      <div class="card-container list-group">
-        <div class="list-group-item card" draggable="true">New Card Title</div>
-      </div>
-    `;
-    columnContainer.appendChild(newColumn);
-    initializeSortableCardContainer(newColumn);
-    initializeSortableColumns(bordContainer);
-    // api 호출(컬럼 생성 api)
-  }
-
-  createBoardBtn.addEventListener("click", createNewColumn);
-
-  const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-        mutation.addedNodes.forEach((node) => {
-          if (node.classList && node.classList.contains("column")) {
-            initializeSortableCardContainer(node);
-          }
-        });
-      }
+  $.ajax({
+    type: 'PUT',
+    url: `/boards/${boardId}/columns`,
+    contentType: 'application/json',
+    data: JSON.stringify(columns),
+    success: function (data) {
+      console.log('Columns saved successfully:', data);
+    },
+    error: function (error) {
+      console.error('Error saving columns:', error);
     }
   });
+}
 
-  observer.observe(columnContainer, { childList: true, subtree: true });
-  observer.observe(bordContainer, { childList: true, subtree: true });
-});
+function updateColumnPosition(columnId, newPosition, boardId) {
+  const columnElement = document.querySelector(`[data-column-id="${columnId}"]`);
+  const columnStatus = columnElement ? columnElement.getAttribute('data-status') : 'defaultStatus';
+
+  // 서버에 저장
+  saveColumnsToServer(boardId);
+}

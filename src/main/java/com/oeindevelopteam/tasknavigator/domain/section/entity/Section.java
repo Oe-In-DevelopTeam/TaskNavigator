@@ -45,7 +45,14 @@ public class Section extends Timestamped {
         this.sectionOrder = order;
     }
 
+    public void updateStatus(String status) {this.status = status;}
+
     public void addCards(List<Card> cards) {
         this.cards = cards;
+    }
+
+    public void updateSection(SectionRequestDto requestDto) {
+        this.status = requestDto.getStatus();
+        this.sectionOrder = requestDto.getSectionOrder();
     }
 }
