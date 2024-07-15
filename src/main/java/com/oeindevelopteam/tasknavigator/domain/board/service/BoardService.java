@@ -223,5 +223,9 @@ public class BoardService {
 
     }
 
-
+    public Board getBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(() ->
+            new CustomException(ErrorCode.BOARD_NOT_FOUND)
+        );
+    }
 }

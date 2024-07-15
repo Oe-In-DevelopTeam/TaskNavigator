@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SectionController {
 
   private final SectionService sectionService;
-
   @PostMapping()
   ResponseEntity<CommonResponseDto> createSection(@PathVariable Long boardId, @RequestBody SectionRequestDto requestDto) {
 
