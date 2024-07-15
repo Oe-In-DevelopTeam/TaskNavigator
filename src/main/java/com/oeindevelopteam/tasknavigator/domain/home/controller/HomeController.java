@@ -20,14 +20,19 @@ public class HomeController {
 
   // TODO: 카드 번호에 따라 다른 상세 페이지를 보여주는 것이 필요
 //  @GetMapping("/cards/{cardId}")
-  @GetMapping("/cards")
+  @GetMapping("/card")
   public String cardDetailsPage() {
     return "card-details";
   }
 
+  @GetMapping("/cards")
+  public String cardsPage() {
+    return "cards";
+  }
+
   // TODO: 카드 번호에 따라 다른 수정 페이지를 보여주는 것이 필요
 //  @GetMapping("/cards/edit/{cardId}")
-  @GetMapping("/cards/edit")
+  @GetMapping("/card/edit")
   public String cardEditPage() {
     return "edit-card";
   }
