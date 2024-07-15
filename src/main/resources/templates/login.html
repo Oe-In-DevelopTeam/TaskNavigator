@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Task Navigator Login Page</title>
   <link rel="stylesheet"type="text/css" href="/css/global.css">
   <link rel="stylesheet" type="text/css" href="/css/login.css">
@@ -16,48 +19,9 @@
   <input id="userPassword" name="password" type="password" placeholder="PW">
   <div class="button-container">
     <button onclick="window.open('http://localhost:8080/users/signup-page')">SIGNUP</button>
-    <button onclick="onLogin()">LOGIN</button>
+    <button type="submit">LOGIN</button>
   </div>
 </form>
-
-<script>
-  $(document).ready(function () {
-    // 토큰 삭제
-    Cookies.remove('Authorization', {path: '/'});
-  });
-
-  const href = location.href;
-  const host = 'http://' + window.location.host;
-
-  function onLogin() {
-    let username = $('#userId').val();
-    let password = $('#userPassword').val();
-
-    console.log(username);
-
-    $.ajax({
-      type: "POST",
-      url: `/users/login`,
-      contentType: "application/json",
-      data: JSON.stringify({userId: username, password: password}),
-    })
-    .done(function (res, status, xhr) {
-      const token = xhr.getResponseHeader('Authorization');
-
-      Cookies.set('Authorization', token, {path: '/'})
-
-      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-        console.log(token);
-        jqXHR.setRequestHeader('Authorization', token);
-      });
-
-      window.location.href = host + '/home';
-    })
-    .fail(function (jqXHR, textStatus) {
-      alert("Login Fail");
-    });
-  }
-</script>
-
 </body>
+<script src="/js/login.js"></script>
 </html>

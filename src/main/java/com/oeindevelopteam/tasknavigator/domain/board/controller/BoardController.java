@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class BoardController {
 
     private final BoardService boardService;
@@ -26,15 +26,10 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-//    public ResponseEntity<CommonResponseDto<List<BoardListResponseDto>>> getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model){
-    public String getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model){
+    public ResponseEntity<CommonResponseDto<List<BoardListResponseDto>>> getAllBoards(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model){
         List<BoardListResponseDto> boardList = boardService.getAllBoards(userDetails.getUser());
 
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("user", userDetails.getUser());
-
-//        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList));
-        return "index";
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList));
     }
 
     @PostMapping("/admin/boards")

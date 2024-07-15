@@ -9,6 +9,10 @@
   <link rel="stylesheet" type="text/css" href="/css/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="/js/basic.js"></script>
 </head>
 <body>
   <nav>
@@ -16,7 +20,7 @@
       <a href="http://localhost:8080/home">Task Navigator</a>
     </div>
     <div class="nav-container nav-right">
-      <span id="navUsername" th:text="${user.username}">Username</span>
+      <span id="navUsername" th:text="${test}">Username</span>
       <a href="http://localhost:8080/users/login-page">LOG OUT</a>
     </div>
   </nav>
@@ -26,10 +30,10 @@
   </a>
 
 
-  <div class="boards-container" th:each="board : ${boardList}">
-    <span th:text="${board.getBoardName()}">sladfkjadsl;fkjasdlfkj</span>
-    <span th:text="${board.getInfo()}">dlfkjasdlfkjasdl;fjl;kj</span>
-  </div>
+<!--  <div class="boards-container" th:each="board : ${boardList}">-->
+<!--    <span th:text="${board.getBoardName()}">sladfkjadsl;fkjasdlfkj</span>-->
+<!--    <span th:text="${board.getInfo()}">dlfkjasdlfkjasdl;fjl;kj</span>-->
+<!--  </div>-->
 
 
   <div class="board-container">
