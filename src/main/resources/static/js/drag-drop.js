@@ -2,7 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const boardContainer = document.querySelector(".board-container");
   const columnContainer = boardContainer.querySelector(".column-container");
   const createBoardBtn = document.querySelector(".create-board");
-  const boardId = '1'; // 테스트 용
+  const boardId = boardContainer.getAttribute('data-board-id');
+
+  // basic.js에서 가져오기
+  const auth = getToken();
+  if (auth === undefined || auth === '') {
+    window.location.href = '/users/login-page';
+    return;
+  }
 
   function initializeSortableCardContainer(column) {
     new Sortable(column.querySelector(".card-container"), {
@@ -126,19 +133,17 @@ document.addEventListener("DOMContentLoaded", () => {
       columns.push({ id: columnId, status: status, cards: cards });
     });
 
-    fetch(`/boards/${boardId}/columns`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    $.ajax({
+      type: 'PUT',
+      url: `/boards/${boardId}/columns`,
+      contentType: 'application/json',
+      data: JSON.stringify(columns),
+      success: function (data) {
+        console.log('Columns saved successfully:', data);
       },
-      body: JSON.stringify(columns),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Columns saved successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error saving columns:', error);
+      error: function (error) {
+        console.error('Error saving columns:', error);
+      }
     });
   }
 
@@ -149,21 +154,141 @@ document.addEventListener("DOMContentLoaded", () => {
       status: status,
       cards: []
     };
-    fetch(`/boards/${boardId}/columns`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+
+    $.ajax({
+      type: 'POST',
+      url: `/boards/${boardId}/columns`,
+      contentType: 'application/json',
+      data: JSON.stringify(columnData),
+      success: function (data) {
+        console.log('Column created successfully:', data);
       },
-      body: JSON.stringify(columnData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Column created successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error creating column:', error);
+      error: function (error) {
+        console.error('Error creating column:', error);
+      }
     });
   }
+
+  function deleteColumnFromServer(columnId) {
+    $.ajax({
+      type: 'DELETE',
+      url: `/boards/${boardId}/columns/${columnId}`,
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('Column deleted successfully:', data);
+      },
+      error: function (error) {
+        console.error('Error deleting column:', error);
+      }
+    });
+  }
+
+  function deleteCardFromServer(columnId, cardId) {
+    $.ajax({
+      type: 'DELETE',
+      url: `/boards/${boardId}/columns/${columnId}/cards/${cardId}`,
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('Card deleted successfully:', data);
+      },
+      error: function (error) {
+        console.error('Error deleting card:', error);
+      }
+    });
+  }
+
+  function createCard(cardContainer, columnId) {
+    const newCard = document.createElement('div');
+    newCard.classList.add('list-group-item', 'card');
+    newCard.setAttribute('draggable', 'true');
+    const cardId = Date.now().toString(); // Unique ID
+    newCard.setAttribute('data-card-id', cardId);
+    newCard.textContent = 'New Card Title'; // Set card title
+    cardContainer.appendChild(newCard);
+
+    // 서버에 저장
+    saveCardToServer(columnId, cardId, 'New Card Title');
+  }
+
+  function saveCardToServer(columnId, cardId, title) {
+    const cardData = {
+      id: cardId,
+      title: title
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: `/boards/${boardId}/columns/${columnId}/cards`,
+      contentType: 'application/json',
+      data: JSON.stringify(cardData),
+      success: function (data) {
+        console.log('Card created successfully:', data);
+      },
+      error: function (error) {
+        console.error('Error creating card:', error);
+      }
+    });
+  }
+
+  function updateColumnPosition(columnId, newPosition) {
+    const columnElement = document.querySelector(`[data-column-id="${columnId}"]`);
+    const columnStatus = columnElement ? columnElement.getAttribute('data-status') : 'defaultStatus';
+
+    // 서버에 저장
+    saveColumnsToServer();
+  }
+
+  // 페이지 로드 시 서버에서 데이터 로드
+  $.ajax({
+    type: 'GET',
+    url: `/boards/${boardId}/columns`,
+    contentType: 'application/json',
+    success: function (data) {
+      if (Array.isArray(data)) {
+        data.forEach(columnData => {
+          const newColumn = document.createElement("div");
+          newColumn.classList.add("column");
+          newColumn.setAttribute('data-column-id', columnData.id);
+          newColumn.setAttribute('data-status', columnData.status);
+          newColumn.innerHTML = `
+            <div class="column-status-container">
+              <span class="column-status">${columnData.status}</span>
+              <input type="text" class="edit-column-input" style="display:none;">
+              <div class="btn-container">
+                <a href="#" class="edit-column">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+                <a href="#" class="create-card">
+                  <i class="fa-solid fa-plus"></i>
+                </a>
+                <a href="#" class="remove-column">
+                  <i class="fa-solid fa-xmark"></i>
+                </a>
+              </div>
+            </div>
+            <div class="card-container list-group"></div>
+          `;
+          columnData.cards.forEach(cardData => {
+            const newCard = document.createElement('div');
+            newCard.classList.add('list-group-item', 'card');
+            newCard.setAttribute('draggable', 'true');
+            newCard.setAttribute('data-card-id', cardData.id);
+            newCard.textContent = cardData.title;
+            newColumn.querySelector('.card-container').appendChild(newCard);
+          });
+          columnContainer.appendChild(newColumn);
+          initializeSortableCardContainer(newColumn);
+          initializeSortableColumns(boardContainer);
+          newColumn.querySelector('.create-card').addEventListener('click', () => createCard(newColumn.querySelector('.card-container'), columnData.id));
+        });
+      } else {
+        console.error('Unexpected data format:', data);
+      }
+    },
+    error: function (error) {
+      console.error('Error loading columns:', error);
+    }
+  });
 
   document.addEventListener('click', function(event) {
     if (event.target.closest('.remove-column')) {
@@ -206,132 +331,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function createCard(cardContainer, columnId) {
-    const newCard = document.createElement('div');
-    newCard.classList.add('list-group-item', 'card');
-    newCard.setAttribute('draggable', 'true');
-    const cardId = Date.now().toString(); // Unique ID
-    newCard.setAttribute('data-card-id', cardId);
-    newCard.textContent = 'New Card Title'; // Set card title
-    cardContainer.appendChild(newCard);
-
-    // 서버에 저장
-    saveColumnsToServer(columnId, cardId, 'New Card Title');
-  }
-
-  function saveCardToServer(columnId, cardId, title) {
-    const cardData = {
-      id: cardId,
-      title: title
-    };
-    fetch(`/boards/${boardId}/columns/${columnId}/cards`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(cardData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Card created successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error creating card:', error);
-    });
-  }
-
-  function deleteColumnFromServer(columnId) {
-    fetch(`/boards/${boardId}/columns/${columnId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Column deleted successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error deleting column:', error);
-    });
-  }
-
-  function deleteCardFromServer(columnId, cardId) {
-    fetch(`/boards/${boardId}/columns/${columnId}/cards/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Card deleted successfully:', data);
-    })
-    .catch((error) => {
-      console.error('Error deleting card:', error);
-    });
-  }
-
-  function updateColumnPosition(columnId, newPosition) {
-    const columnElement = document.querySelector(`[data-column-id="${columnId}"]`);
-    const columnStatus = columnElement ? columnElement.getAttribute('data-status') : 'defaultStatus';
-
-    // 서버에 저장
-    saveColumnsToServer();
-  }
-
-  // 페이지 로드 시 서버에서 데이터 로드
-  fetch(`/boards/${boardId}/columns`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    // 데이터 array 인지 확인
-    if (Array.isArray(data)) {
-      data.forEach(columnData => {
-        const newColumn = document.createElement("div");
-        newColumn.classList.add("column");
-        newColumn.setAttribute('data-column-id', columnData.id);
-        newColumn.setAttribute('data-status', columnData.status);
-        newColumn.innerHTML = `
-          <div class="column-status-container">
-            <span class="column-status">${columnData.status}</span>
-            <input type="text" class="edit-column-input" style="display:none;">
-            <div class="btn-container">
-              <a href="#" class="edit-column">
-                <i class="fa-regular fa-pen-to-square"></i>
-              </a>
-              <a href="#" class="create-card">
-                <i class="fa-solid fa-plus"></i>
-              </a>
-              <a href="#" class="remove-column">
-                <i class="fa-solid fa-xmark"></i>
-              </a>
-            </div>
-          </div>
-          <div class="card-container list-group"></div>
-        `;
-        columnData.cards.forEach(cardData => {
-          const newCard = document.createElement('div');
-          newCard.classList.add('list-group-item', 'card');
-          newCard.setAttribute('draggable', 'true');
-          newCard.setAttribute('data-card-id', cardData.id);
-          newCard.textContent = cardData.title;
-          newColumn.querySelector('.card-container').appendChild(newCard);
-        });
-        columnContainer.appendChild(newColumn);
-        initializeSortableCardContainer(newColumn);
-        initializeSortableColumns(boardContainer);
-        newColumn.querySelector('.create-card').addEventListener('click', () => createCard(newColumn.querySelector('.card-container'), columnData.id));
-      });
-    } else {
-      console.error('Unexpected data format:', data);
-    }
-  })
-  .catch((error) => {
-    console.error('Error loading columns:', error);
-  });
 });
