@@ -3,6 +3,8 @@ let targetId;
 let folderTargetId;
 
 $(document).ready(function () {
+  const boardsContainer = document.querySelector('.boards-container');
+
   const auth = getToken();
 
   if (auth !== undefined && auth !== '') {
@@ -31,9 +33,9 @@ $(document).ready(function () {
     $('#navUsername').text(username);
     if (isAdmin) {
       // $('#admin').text(true);
-      showProduct();
+      // showProduct();
     } else {
-      showProduct();
+      // showProduct();
     }
 
     // 로그인한 유저의 폴더
@@ -41,16 +43,85 @@ $(document).ready(function () {
       type: 'GET',
       url: `/boards`,
       error(error) {
-        logout();
+        // logout();
       }
-    }).done(function (fragment) {
+    }).done(function (res, status, xhr) {
+
+      console.log(res.data);
+      console.log(res.data[0].boardName);
+      console.log(res.data[0].info);
+      console.log(res.data[0].length);
+      console.log(res.data[0].sections.length);
+
+
+      for (let i = 0; i < res.data.length; i++) {
+        let boardTemplate = `
+      <div class="board-container">
+    <div class="board-top">
+      <div class="board-intro-container">
+        <h3>${res.data[i].boardName}</h3>
+        <p>${res.data[i].info}</p>
+      </div>
+      <a href="#" class="create-column">
+        <i class="fa-solid fa-plus"></i>
+      </a>
+    </div>
+    <div class="column-container">
+      
+    </div>
+  </div>
+  `;
+
+        boardsContainer.insertAdjacentHTML('beforeend', boardTemplate);
+
+        const currentBoard = boardsContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
+        const columnContainer = currentBoard.querySelector('.column-container');
+
+        console.log(columnContainer);
+
+        for (let j = 0; j < res.data[i].sections.length; j++) {
+          let columnTemplate = `
+        <div class="column" draggable="true">
+        <div class="column-status-container">
+          <span class="column-status">${res.data[i].sections[j].status}</span>
+          <input type="text" class="edit-column-input" style="display:none;">
+          <div class="btn-container">
+            <a href="#" class="edit-column">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </a>
+            <a href="#" class="create-card">
+              <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="#" class="remove-column">
+              <i class="fa-solid fa-xmark"></i>
+            </a>
+          </div>
+        </div>
+        <div class="card-container"></div>
+      </div>
+        `;
+
+          columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
+
+          const currentColumn= columnContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
+          const cardContainer= currentColumn.querySelector('.card-container');
+
+          for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
+            let cardTemplate = `
+            <a href="#" class="card" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
+            `;
+
+            cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
+          }
+        }
+      }
 
       // $('#fragment').replaceWith(fragment);
     });
 
   })
   .fail(function (jqXHR, textStatus) {
-    logout();
+    // logout();
   });
 
   // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.

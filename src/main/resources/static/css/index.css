@@ -30,6 +30,12 @@ body {
   font-size: 35px;
 }
 
+.boards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
 .board-container {
   display: flex;
   flex-direction: column;
