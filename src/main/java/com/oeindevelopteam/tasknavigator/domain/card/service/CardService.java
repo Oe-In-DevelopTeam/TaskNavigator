@@ -273,7 +273,7 @@ public class CardService {
     return cardLists;
   }
 
-  private void checkUserPermission(User user, Long boardId) {
+  public void checkUserPermission(User user, Long boardId) {
     // admin이 아닐때
     if (!findUserisAdmin(user)) {
       List<Long> boardIds = getInvitedBoardIds(user.getId());
@@ -292,7 +292,7 @@ public class CardService {
     }
   }
 
-  private boolean findUserisAdmin(User user) {
+  public boolean findUserisAdmin(User user) {
 
     // userId 로 Board 권한 체크
     List<UserRoleMatches> roles = userRoleMatchesRepository.findByUser(user);
@@ -318,7 +318,7 @@ public class CardService {
   }
 
 
-  private Card getCardById(Long cardId) {
+  public Card getCardById(Long cardId) {
     Card card = cardRepository.findById(cardId)
         .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
 
