@@ -46,9 +46,6 @@ public class CardController {
       @RequestBody CardRequestDto cardRequestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
     CardResponseDto responseDto = cardService.editCardContent(cardRequestDto, cardId,
         userDetails.getUser());
 
@@ -61,9 +58,6 @@ public class CardController {
       @PathVariable Long columnId, @PathVariable Long cardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
     cardService.deleteCard(cardId, userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
@@ -87,9 +81,6 @@ public class CardController {
       @PathVariable Long columnId, @PathVariable Long cardId,
       @RequestBody CardTagEditRequestDto cardTagEditRequestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
 
     CardResponseDto responseDto = cardService.editCardTags(cardId, cardTagEditRequestDto,
         userDetails.getUser());
@@ -123,6 +114,4 @@ public class CardController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 조회에 성공하였습니다.", responseDtos));
   }
-
-
 }
