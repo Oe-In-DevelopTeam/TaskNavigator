@@ -154,6 +154,16 @@ boardsContainer.addEventListener('click', (event) => {
       columnToEdit.classList.remove('hidden');
     }
   }
+
+  if (event.target.closest('.create-card')) {
+    let cardTemplate = `
+   <a href="#" class="card" draggable="true">New Card</a> 
+    `;
+    const cardContainer = event.target.closest('.column').querySelector('.card-container');
+    if (cardContainer) {
+      cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
+    }
+  }
 });
 
 function getToken() {
