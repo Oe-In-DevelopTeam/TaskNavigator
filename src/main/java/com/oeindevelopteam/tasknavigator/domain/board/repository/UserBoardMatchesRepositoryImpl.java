@@ -113,7 +113,7 @@ public class UserBoardMatchesRepositoryImpl implements UserBoardMatchesRepositor
                 .map(this::convertToSectionDto)
                 .collect(Collectors.toList());
 
-        return new BoardListResponseDto(board.getBoardName(), board.getInfo(), sectionDtos);
+        return new BoardListResponseDto(board.getId(), board.getBoardName(), board.getInfo(), sectionDtos);
     }
 
     private SectionDto convertToSectionDto(Section section) {
@@ -121,11 +121,11 @@ public class UserBoardMatchesRepositoryImpl implements UserBoardMatchesRepositor
                 .map(this::convertToCardDto)
                 .collect(Collectors.toList());
 
-        return new SectionDto(section.getSectionOrder(), section.getStatus(), cardDtos);
+        return new SectionDto(section.getId(), section.getSectionOrder(), section.getStatus(), cardDtos);
     }
 
     private CardDto convertToCardDto(Card card) {
-        return new CardDto(card.getTitle(), card.getContent(), card.getDueDate(), card.getManager());
+        return new CardDto(card.getId(), card.getTitle(), card.getContent(), card.getDueDate(), card.getManager());
     }
 
 }

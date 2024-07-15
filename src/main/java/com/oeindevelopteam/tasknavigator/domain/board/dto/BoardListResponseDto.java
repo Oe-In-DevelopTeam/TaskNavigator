@@ -11,12 +11,14 @@ import java.util.List;
 @Setter
 public class BoardListResponseDto {
 
+    private Long boardId;
     private String boardName;
     private String info;
     private List<SectionDto> sections; // SectionDto 리스트 필드 추가
 
     // 매개변수 생성자
-    public BoardListResponseDto(String boardName, String info, List<SectionDto> sections) {
+    public BoardListResponseDto(Long boardId, String boardName, String info, List<SectionDto> sections) {
+        this.boardId = boardId;
         this.boardName = boardName;
         this.info = info;
         this.sections = sections;
