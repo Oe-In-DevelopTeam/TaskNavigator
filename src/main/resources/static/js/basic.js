@@ -114,10 +114,22 @@ $(document).ready(function () {
 })
 
 boardsContainer.addEventListener('click', (event) => {
-  let columnTemplate = `
- <div class="column" draggable="true">
+  const boardContainer = event.target.closest('.board-container');
+  const boardId = boardContainer.dataset.boardId;
+
+  if (event.target.closest('.create-column')) {
+    console.log("boardID: " + boardId);
+
+    $.ajax({
+      type: 'POST',
+      url: `/boards/${boardId}/columns`,
+      contentType: "application/json",
+      data: JSON.stringify({status: "New Status", sectionOrder: 0}),
+    }).done(function (res, status, xhr) {
+      let columnTemplate = `
+ <div class="column" data-board-id="${boardId}" data-column-id="${res.data.id}" draggable="true">
         <div class="column-status-container">
-          <span class="column-status"></span>
+          <span class="column-status">New Status</span>
           <input type="text" class="edit-column-input hidden">
           <div class="btn-container">
             <a href="#" class="edit-column">
@@ -134,37 +146,60 @@ boardsContainer.addEventListener('click', (event) => {
         <div class="card-container"></div>
       </div> 
   `;
-  if (event.target.closest('.create-column')) {
-    const boardContainer = event.target.closest('.board-container');
-    const boardId = boardContainer.dataset.boardId;
-    console.log("boardID: " + boardId);
-    const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
-    // $.ajax({
-    //   type: 'POST',
-    //   url: `/boards/${boardId}/columns`,
-    //   // data: JSON.stringify({status: username, sectionOrder: password}),
-    // }).done(function (res, status, xhr) {
-    //
-    // })
-    // .fail(function (jqXHR, textStatus) {
-    // });
+      const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
+      if (columnContainer) {
+        columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
+      }
+    })
+    .fail(function (jqXHR, textStatus) {
+    });
 
-    if (columnContainer) {
-      columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
-    }
   }
 
   if (event.target.closest('.remove-column')) {
     const columnToRemove = event.target.closest('.column');
+    const columnId = columnToRemove.dataset.columnId;
+
+    const isConfirmed = confirm('정말로 삭제하시겠습니까?');
+    if (!isConfirmed) {
+      return;
+    }
+
     if (columnToRemove) {
       columnToRemove.remove();
     }
+
+    $.ajax({
+      type: 'DELETE',
+      url: `/boards/${boardId}/columns/${columnId}`,
+    }).done(function (res, status, xhr) {
+
+    })
+    .fail(function (jqXHR, textStatus) {
+    });
   }
 
   if (event.target.closest('.edit-column')) {
+    const editColumn = event.target.closest('.column');
+    const columnId = editColumn.dataset.columnId;
     const columnToEdit = event.target.closest('.column').querySelector('.edit-column-input');
     if (columnToEdit) {
       columnToEdit.classList.remove('hidden');
+    }
+
+    console.log(columnToEdit.value);
+
+    if (columnToEdit.value != '') {
+      $.ajax({
+        type: 'PUT',
+        url: `/boards/${boardId}/columns/${columnId}`,
+        contentType: "application/json",
+        data: JSON.stringify({status: "New Status", sectionOrder: 0}),
+      }).done(function (res, status, xhr) {
+
+      })
+      .fail(function (jqXHR, textStatus) {
+      });
     }
   }
 
