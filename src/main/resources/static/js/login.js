@@ -1,55 +1,36 @@
-const userId = document.getElementById('userId');
-const password = document.getElementById("userPassword");
-const loginButton = document.querySelector('button[type="submit"]');
+$(document).ready(function () {
+  // 토큰 삭제
+  Cookies.remove('Authorization', {path: '/'});
+});
 
-function handlerLogin(event) {
-  event.preventDefault();
+const href = location.href;
+const host = 'http://' + window.location.host;
 
-  const userIdValue = userId.value;
-  const passwordValue = password.value;
+$('button[type="submit"]').click(function (event) {
+  let username = $('#userId').val();
+  let password = $('#userPassword').val();
 
-  fetch('http://localhost:8080/users/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ userId: userIdValue, password: passwordValue })
+  console.log(username);
+
+  $.ajax({
+    type: "POST",
+    url: `/users/login`,
+    contentType: "application/json",
+    data: JSON.stringify({userId: username, password: password}),
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error();
-    }
-    localStorage.setItem('Authorization', response.headers.get('Authorization'));
-    return response.json();
+  .done(function (res, status, xhr) {
+    const token = xhr.getResponseHeader('Authorization');
+
+    Cookies.set('Authorization', token, {path: '/'})
+
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+      console.log(token);
+      jqXHR.setRequestHeader('Authorization', token);
+    });
+
+    window.location.href = host + '/home';
   })
-  .then(async data => {
-    const resultData = await fetchWithToken('http://localhost:8080/boards');
-  })
-  .catch(error => {
-    alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+  .fail(function (jqXHR, textStatus) {
+    alert("Login Fail");
   });
-}
-
-async function fetchWithToken(url, options = {}) {
-  const token = localStorage.getItem('Authorization');
-  if (!options.headers) {
-    options.headers = {};
-  }
-  if (token) {
-    options.headers['Authorization'] = token;
-  }
-
-  try {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      throw new Error('Request failed');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-}
-
-loginButton.addEventListener('click', handlerLogin);
+})

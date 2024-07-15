@@ -31,6 +31,7 @@ public class BoardController {
         List<BoardListResponseDto> boardList = boardService.getAllBoards(userDetails.getUser());
 
         model.addAttribute("boardList", boardList);
+        model.addAttribute("user", userDetails.getUser());
 
 //        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto<>(HttpStatus.OK.value(), "보드를 조회했습니다.", boardList));
         return "index";

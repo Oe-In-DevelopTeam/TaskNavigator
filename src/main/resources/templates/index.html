@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Task Navigator Main Page</title>
@@ -16,7 +16,7 @@
       <a href="http://localhost:8080/home">Task Navigator</a>
     </div>
     <div class="nav-container nav-right">
-      <span id="navUsername">Username</span>
+      <span id="navUsername" th:text="${user.username}">Username</span>
       <a href="http://localhost:8080/users/login-page">LOG OUT</a>
     </div>
   </nav>
