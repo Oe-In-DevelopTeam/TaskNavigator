@@ -41,15 +41,6 @@ public class CardController {
         .body(new CommonResponseDto(200, "카드 생성에 성공하였습니다.", responseDto));
   }
 
-  @GetMapping("/admin/cards")
-  public ResponseEntity<CommonResponseDto> getAllCards() {
-    List<CardResponseDto> responseDtos = cardService.getAllCards();
-
-    // TODO: Admin인지 아닌지 확인하는 로직 필요
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new CommonResponseDto(200, "전체 카드 조회에 성공하였습니다.", responseDtos));
-  }
-
   @PutMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
   public ResponseEntity<CommonResponseDto> editCardContent(@PathVariable Long boardId,
       @PathVariable Long columnId, @PathVariable Long cardId,

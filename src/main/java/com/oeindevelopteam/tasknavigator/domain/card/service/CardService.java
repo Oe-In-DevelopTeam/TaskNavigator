@@ -61,14 +61,6 @@ public class CardService {
     return new CardResponseDto(card);
   }
 
-  public List<CardResponseDto> getAllCards() {
-    List<Card> cards = cardRepository.findAll();
-
-    return cards.stream()
-        .map(card -> new CardResponseDto(card))
-        .collect(Collectors.toList());
-  }
-
   @Transactional
   public CardResponseDto editCardContent(CardRequestDto cardRequestDto, Long cardId) {
     // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
