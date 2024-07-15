@@ -47,7 +47,7 @@ $(document).ready(function () {
 
       for (let i = 0; i < res.data.length; i++) {
         let boardTemplate = `
-      <div class="board-container">
+      <div class="board-container" data-board-id="${res.data[i].boardId}">
     <div class="board-top">
       <div class="board-intro-container">
         <h3>${res.data[i].boardName}</h3>
@@ -69,7 +69,7 @@ $(document).ready(function () {
 
         for (let j = 0; j < res.data[i].sections.length; j++) {
           let columnTemplate = `
-        <div class="column" draggable="true">
+        <div class="column" data-board-id="${boardId}" data-column-id="${res.data[i].sections[j].sectionId}" draggable="true">
         <div class="column-status-container">
           <span class="column-status">${res.data[i].sections[j].status}</span>
           <input type="text" class="edit-column-input" style="display:none;">
@@ -98,7 +98,7 @@ $(document).ready(function () {
           for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
             let cardId = res.data[i].sections[j].cards[k].cardId;
             let cardTemplate = `
-            <a href="/boards/${boardId}/columns/${columnId}/cards/${cardId}" class="card" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
+            <a href="/boards/${boardId}/columns/${columnId}/cards/${cardId}" class="card" data-board-id="${boardId}" data-column-id="${columnId}" data-card-id="${cardId}" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
             `;
 
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
@@ -135,7 +135,20 @@ boardsContainer.addEventListener('click', (event) => {
       </div> 
   `;
   if (event.target.closest('.create-column')) {
+    const boardContainer = event.target.closest('.board-container');
+    const boardId = boardContainer.dataset.boardId;
+    console.log("boardID: " + boardId);
     const columnContainer = event.target.closest('.board-container').querySelector('.column-container');
+    // $.ajax({
+    //   type: 'POST',
+    //   url: `/boards/${boardId}/columns`,
+    //   // data: JSON.stringify({status: username, sectionOrder: password}),
+    // }).done(function (res, status, xhr) {
+    //
+    // })
+    // .fail(function (jqXHR, textStatus) {
+    // });
+
     if (columnContainer) {
       columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
     }
