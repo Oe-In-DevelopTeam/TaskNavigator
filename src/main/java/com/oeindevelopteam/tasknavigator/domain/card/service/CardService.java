@@ -11,6 +11,8 @@ import com.oeindevelopteam.tasknavigator.domain.card.entity.CardTagMatches;
 import com.oeindevelopteam.tasknavigator.domain.card.repository.CardRepository;
 import com.oeindevelopteam.tasknavigator.domain.card.repository.CardTagRepository;
 import com.oeindevelopteam.tasknavigator.domain.user.entity.User;
+import com.oeindevelopteam.tasknavigator.domain.user.entity.UserRoleMatches;
+import com.oeindevelopteam.tasknavigator.domain.user.repository.UserRoleMatchesRepository;
 import com.oeindevelopteam.tasknavigator.global.exception.CustomException;
 import com.oeindevelopteam.tasknavigator.global.exception.ErrorCode;
 import java.util.ArrayList;
@@ -31,12 +33,14 @@ public class CardService {
   private final CardRepository cardRepository;
   private final CardTagRepository cardTagRepository;
   private final UserBoardMatchesRepository userBoardMatchesRepository;
+  private final UserRoleMatchesRepository userRoleMatchesRepository;
 
   @Transactional
-  public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long boardId, Long columnId) {
+  public CardResponseDto createdCard(CardRequestDto cardRequestDto, Long boardId, Long columnId,
+      User user) {
+    checkUserPermission(user, boardId);
 
-    // TODO: 유저아이디 넣어주는거 필요
-    Long userId = 1L;
+    Long userId = user.getId();
 
     Card card = new Card(cardRequestDto, boardId, columnId, userId);
 
@@ -47,7 +51,7 @@ public class CardService {
       CardTag tag = findCardTagByName(tagName);
 
       if (tag == null) {
-        // TODO: 태그 없는 게 들어왔을 때 로직 논의 필요
+        throw new CustomException(ErrorCode.TAG_NOT_FOUND);
       }
 
       CardTagMatches matches = new CardTagMatches(card, tag);
@@ -62,11 +66,18 @@ public class CardService {
   }
 
   @Transactional
-  public CardResponseDto editCardContent(CardRequestDto cardRequestDto, Long cardId) {
-    // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
-    // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
+  public CardResponseDto editCardContent(CardRequestDto cardRequestDto, Long cardId, User user) {
 
-    Card card = findCardById(cardId);
+    Card card = cardRepository.findById(cardId)
+        .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
+
+    checkUserPermission(user, card.getBoardId());
+
+    if (!findUserisAdmin(user)) {
+      if (user.getId() != card.getUserId()) {
+        throw new CustomException(ErrorCode.CARD_ACCESS_DENIED);
+      }
+    }
 
     card.editCard(cardRequestDto);
 
@@ -76,8 +87,17 @@ public class CardService {
   }
 
   @Transactional
-  public CardResponseDto editCardTags(Long cardId, CardTagEditRequestDto cardTagEditRequestDto) {
-    Card card = findCardById(cardId);
+  public CardResponseDto editCardTags(Long cardId, CardTagEditRequestDto cardTagEditRequestDto,
+      User user) {
+    Card card = getCardById(cardId);
+
+    checkUserPermission(user, card.getBoardId());
+
+    if (!findUserisAdmin(user)) {
+      if (user.getId() != card.getUserId()) {
+        throw new CustomException(ErrorCode.CARD_ACCESS_DENIED);
+      }
+    }
 
     Set<CardTag> cardTags = findCardTagByNameIn(cardTagEditRequestDto.getTags());
 
@@ -103,40 +123,40 @@ public class CardService {
     return new CardResponseDto(card);
   }
 
-  public CardResponseDto getCardDetail(Long cardId) {
-    Card card = findCardById(cardId);
+  public CardResponseDto getCardDetail(Long cardId, User user) {
+    Card card = getCardById(cardId);
+
+    checkUserPermission(user, card.getBoardId());
+
+    if (!findUserisAdmin(user)) {
+      if (user.getId() != card.getUserId()) {
+        throw new CustomException(ErrorCode.CARD_ACCESS_DENIED);
+      }
+    }
 
     return new CardResponseDto(card);
   }
 
-  public void deleteCard(Long cardId) {
-    // TODO: 유저 본인이 작성한 유저인지 확인 로직 필요
-    // TODO: 유저가 admin이면 수정할 수 있게해주는 로직 필요
-
-    Card card = findCardById(cardId);
+  public void deleteCard(Long cardId, User user) {
+    Card card = getCardById(cardId);
+    checkUserPermission(user, card.getBoardId());
 
     cardRepository.delete(card);
   }
 
-  public Card findCardById(Long cardId) {
-    return cardRepository.findById(cardId)
-        .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
-  }
-
-  public Set<CardTag> findCardTagByNameIn(Set<String> cardTagNames) {
-    return cardTagRepository.findAllByNameIn(cardTagNames);
-  }
-
-  public CardTag findCardTagByName(String cardTagName) {
-    return cardTagRepository.findByName(cardTagName)
-        .orElseThrow(() -> new IllegalArgumentException("d"));
-  }
-
   public List<CardResponseDto> getCardsByTag(String tag, User user) {
 
-    List<Long> boardIds = getInvitedBoardIds(user.getId());
+    List<Long> boardIds;
 
-    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
+    List<List<Card>> cardLists = new ArrayList<>();
+
+    if (!findUserisAdmin(user)) {
+      boardIds = getInvitedBoardIds(user.getId());
+      cardLists = getCardListsByBoardIds(boardIds);
+    } else {
+      List<Card> cards = cardRepository.findAll();
+      cardLists.add(cards);
+    }
 
     List<Card> resultCards = new ArrayList<>();
 
@@ -163,10 +183,16 @@ public class CardService {
 
 
   public List<CardResponseDto> getCardsByManager(String manager, User user) {
-    List<Long> boardIds = getInvitedBoardIds(user.getId());
-    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
-
     List<Card> resultCards = new ArrayList<>();
+    List<List<Card>> cardLists = new ArrayList<>();
+
+    if (!findUserisAdmin(user)) {
+      List<Long> boardIds = getInvitedBoardIds(user.getId());
+      cardLists = getCardListsByBoardIds(boardIds);
+    } else {
+      List<Card> cards = cardRepository.findAll();
+      cardLists.add(cards);
+    }
 
     for (List<Card> cards : cardLists) {
       for (Card card : cards) {
@@ -180,26 +206,36 @@ public class CardService {
       throw new CustomException(ErrorCode.CARD_NOT_FOUND);
     }
 
-    return resultCards.stream().map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+    return resultCards.stream().map(card -> new CardResponseDto(card))
+        .collect(Collectors.toList());
   }
 
   public List<CardResponseDto> getAllCardsByInvited(User user) {
-    List<Long> boardIds = getInvitedBoardIds(user.getId());
-    List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
+    if (!findUserisAdmin(user)) {
+      List<Long> boardIds = getInvitedBoardIds(user.getId());
+      List<List<Card>> cardLists = getCardListsByBoardIds(boardIds);
 
-    List<Card> resultCards = new ArrayList<>();
+      List<Card> resultCards = new ArrayList<>();
 
-    for (List<Card> cards : cardLists) {
-      for (Card card : cards) {
-        resultCards.add(card);
+      for (List<Card> cards : cardLists) {
+        for (Card card : cards) {
+          resultCards.add(card);
+        }
       }
-    }
 
-    if (resultCards.isEmpty()) {
-      throw new CustomException(ErrorCode.CARD_NOT_FOUND);
-    }
+      if (resultCards.isEmpty()) {
+        throw new CustomException(ErrorCode.CARD_NOT_FOUND);
+      }
 
-    return resultCards.stream().map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+      return resultCards.stream().map(card -> new CardResponseDto(card))
+          .collect(Collectors.toList());
+    } else {
+      List<Card> cards = cardRepository.findAll();
+
+      return cards.stream()
+          .map(card -> new CardResponseDto(card))
+          .collect(Collectors.toList());
+    }
   }
 
 
@@ -236,4 +272,57 @@ public class CardService {
 
     return cardLists;
   }
+
+  private void checkUserPermission(User user, Long boardId) {
+    // admin이 아닐때
+    if (!findUserisAdmin(user)) {
+      List<Long> boardIds = getInvitedBoardIds(user.getId());
+
+      boolean haveBoardId = false;
+
+      for (Long l : boardIds) {
+        if (boardId == l) {
+          haveBoardId = true;
+          break;
+        }
+      }
+      if (!haveBoardId) {
+        throw new CustomException(ErrorCode.NOT_INVITED_USER);
+      }
+    }
+  }
+
+  private boolean findUserisAdmin(User user) {
+
+    // userId 로 Board 권한 체크
+    List<UserRoleMatches> roles = userRoleMatchesRepository.findByUser(user);
+
+    Boolean isAdmin = false;
+
+    for (UserRoleMatches l : roles) {
+      if (l.getUserRole().getRole().equals("MANAGER")) {
+        isAdmin = true;
+        break;
+      }
+    }
+    return isAdmin;
+  }
+
+  public Set<CardTag> findCardTagByNameIn(Set<String> cardTagNames) {
+    return cardTagRepository.findAllByNameIn(cardTagNames);
+  }
+
+  public CardTag findCardTagByName(String cardTagName) {
+    return cardTagRepository.findByName(cardTagName)
+        .orElseThrow(() -> new CustomException(ErrorCode.CARD_TAG_NOT_FOUND));
+  }
+
+
+  private Card getCardById(Long cardId) {
+    Card card = cardRepository.findById(cardId)
+        .orElseThrow(() -> new CustomException(ErrorCode.CARD_NOT_FOUND));
+
+    return card;
+  }
+
 }
