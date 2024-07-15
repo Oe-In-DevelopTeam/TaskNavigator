@@ -25,6 +25,13 @@
     <i class="fa-solid fa-plus"></i>
   </a>
 
+
+  <div class="boards-container" th:each="board : ${boardList}">
+    <span th:text="${board.getBoardName()}">sladfkjadsl;fkjasdlfkj</span>
+    <span th:text="${board.getInfo()}">dlfkjasdlfkjasdl;fjl;kj</span>
+  </div>
+
+
   <div class="board-container">
     <div class="board-top">
       <div class="board-intro-container">
