@@ -22,7 +22,6 @@ public class SectionService {
 
   private final SectionRepository sectionRepository;
   private final SectionStatusRepository sectionStatusRepository;
-  private final BoardRepository boardRepository; // TODO board Repository에 id로 객체 가져오는 코드가 생성되면 수정 예정
   private final BoardService boardService;
 
   @Transactional
@@ -60,6 +59,23 @@ public class SectionService {
     sectionRepository.delete(section);
   }
 
+  public void updateSection(Long boardId, Long columnId, SectionRequestDto requestDto) {
+//    if (!requestDto.getStatus().equals("New Status")) {
+//      Optional<SectionStatus> status = sectionStatusRepository.findByStatus(requestDto.getStatus());
+//      if (status.isPresent()) {
+//        sectionStatusRepository.delete(status.get());
+//      }
+//    }
+//
+//    Section section = findByIdReturnSection(columnId);
+//    section.updateSection(requestDto);
+//    sectionRepository.save(section);
+//
+//    Section saveSection = sectionRepository.save(newSection);
+//
+//    return new SectionResponseDto(saveSection);
+  }
+
   @Transactional
   public void moveSection(Long columnId, int order) {
     Section section = findByIdReturnSection(columnId);
@@ -74,8 +90,10 @@ public class SectionService {
         new CustomException(ErrorCode.SECTION_NOT_FOUND));
   }
 
+
   public Section getSerction(Long sectionId) {
     return sectionRepository.findById(sectionId).orElseThrow(() ->
         new CustomException(ErrorCode.SECTION_NOT_FOUND));
   }
+
 }

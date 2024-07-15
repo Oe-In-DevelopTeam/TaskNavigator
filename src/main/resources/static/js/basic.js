@@ -98,7 +98,7 @@ $(document).ready(function () {
           for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
             let cardId = res.data[i].sections[j].cards[k].cardId;
             let cardTemplate = `
-            <a href="/boards/${boardId}/columns/${columnId}/cards/${cardId}" class="card" data-board-id="${boardId}" data-column-id="${columnId}" data-card-id="${cardId}" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
+            <a href="/card" class="card" data-board-id="${boardId}" data-column-id="${columnId}" data-card-id="${cardId}" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
             `;
 
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
@@ -182,30 +182,58 @@ boardsContainer.addEventListener('click', (event) => {
   if (event.target.closest('.edit-column')) {
     const editColumn = event.target.closest('.column');
     const columnId = editColumn.dataset.columnId;
-    const columnToEdit = event.target.closest('.column').querySelector('.edit-column-input');
-    if (columnToEdit) {
-      columnToEdit.classList.remove('hidden');
-    }
+    const columnStatus = event.target.closest('.column').querySelector('.column-status');
+    if (columnStatus) {
+      const currentText = columnStatus.textContent.trim();
 
-    console.log(columnToEdit.value);
+      columnStatus.innerHTML = `<input type="text" class="edit-column-input" value="${currentText}" />`;
 
-    if (columnToEdit.value != '') {
-      $.ajax({
-        type: 'PUT',
-        url: `/boards/${boardId}/columns/${columnId}`,
-        contentType: "application/json",
-        data: JSON.stringify({status: "New Status", sectionOrder: 0}),
-      }).done(function (res, status, xhr) {
+      const inputField = columnStatus.querySelector('.edit-column-input');
+      inputField.focus();
 
-      })
-      .fail(function (jqXHR, textStatus) {
+      // 엔터 키 입력 처리
+      inputField.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          // 엔터 키가 눌렸을 때 처리할 내용
+          const newValue = inputField.value.trim();
+          columnStatus.innerHTML = newValue; // 수정된 내용을 텍스트로 변경
+
+          $.ajax({
+            type: 'PUT',
+            url: `/boards/${boardId}/columns/${columnId}`,
+            contentType: "application/json",
+            data: JSON.stringify({status: newValue, sectionOrder: 0}),
+          }).done(function (res, status, xhr) {
+
+          })
+          .fail(function (jqXHR, textStatus) {
+          });
+
+          // 저장 후 이벤트 리스너 제거 (선택사항)
+          inputField.removeEventListener('keydown', handleEnterKey);
+        }
       });
     }
+
+    // console.log(columnToEdit.value);
+    //
+    // if (columnToEdit.value != '') {
+    //   $.ajax({
+    //     type: 'PUT',
+    //     url: `/boards/${boardId}/columns/${columnId}`,
+    //     contentType: "application/json",
+    //     data: JSON.stringify({status: "New Status", sectionOrder: 0}),
+    //   }).done(function (res, status, xhr) {
+    //
+    //   })
+    //   .fail(function (jqXHR, textStatus) {
+    //   });
+    // }
   }
 
   if (event.target.closest('.create-card')) {
     let cardTemplate = `
-   <a href="#" class="card" draggable="true">New Card</a> 
+   <a href="/card" class="card" draggable="true">New Card</a> 
     `;
     const cardContainer = event.target.closest('.column').querySelector('.card-container');
     if (cardContainer) {
