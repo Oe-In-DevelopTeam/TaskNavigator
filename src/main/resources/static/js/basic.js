@@ -1,3 +1,8 @@
+import {
+  initializeSortableCardContainer,
+  initializeSortableColumns
+} from './drag-drop.js';
+
 const host = 'http://' + window.location.host;
 const boardsContainer = document.querySelector('.boards-container');
 
@@ -103,7 +108,9 @@ $(document).ready(function () {
 
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);
           }
+          initializeSortableCardContainer(currentColumn, boardId);
         }
+        initializeSortableColumns(currentBoard, boardId);
       }
     });
 
@@ -150,6 +157,10 @@ boardsContainer.addEventListener('click', (event) => {
       if (columnContainer) {
         columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
       }
+
+      const currentColumn = columnContainer.lastElementChild;
+      initializeSortableCardContainer(currentColumn, boardId);
+      initializeSortableColumns(boardContainer, boardId);
     })
     .fail(function (jqXHR, textStatus) {
     });
