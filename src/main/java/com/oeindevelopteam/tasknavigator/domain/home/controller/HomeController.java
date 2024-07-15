@@ -11,10 +11,10 @@ public class HomeController {
     return "index";
   }
 
-//  @GetMapping("/newBoard")
-//  public String createBoardPage() {
-//    return "create-board";
-//  }
+  @GetMapping("/newBoard")
+  public String createBoardPage() {
+    return "create-board";
+  }
 //
 //  // TODO: 카드 번호에 따라 다른 상세 페이지를 보여주는 것이 필요
 ////  @GetMapping("/cards/{cardId}")

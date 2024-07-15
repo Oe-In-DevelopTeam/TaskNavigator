@@ -34,6 +34,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 50px;
+  justify-content: center;
+  align-items: center;
 }
 
 .board-container {
