@@ -1,32 +1,43 @@
-const userId = document.getElementById('userId');
-const password = document.getElementById("userPassword");
-const loginButton = document.querySelector('button[type="submit"]');
+$(document).ready(function () {
+  // 페이지 로드 시 토큰 삭제
+  Cookies.remove('Authorization', {path: '/'});
+});
 
-function handlerLogin(event) {
-  event.preventDefault();
+  // $.ajaxPrefilter를 사용하여 모든 AJAX 요청에 헤더를 추가합니다.
 
-  const userIdValue = userId.value;
-  const passwordValue = password.value;
+  const href = location.href;
+  const host = 'http://' + window.location.host;
 
-  fetch('http://localhost:8080/users/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ userId: userIdValue, password: passwordValue })
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error();
-    }
-    return response.json();
-  })
-  .then(data => {
-    window.location.href = 'http://localhost:8080/home';
-  })
-  .catch(error => {
-    alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+  $('button[type="submit"]').click(function (event) {
+    event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
+
+    let username = $('#userId').val();
+    let password = $('#userPassword').val();
+
+    console.log(username);
+
+    $.ajax({
+      type: "POST",
+      async: false, // 동기 요청(비추천: UI를 멈추게 할 수 있음)
+      url: `/users/login`,
+      contentType: "application/json",
+      data: JSON.stringify({userId: username, password: password}),
+    })
+    .done(function (res, status, xhr) {
+      const token = xhr.getResponseHeader('Authorization');
+
+      // 토큰을 쿠키에 저장합니다.
+      Cookies.set('Authorization', token, {path: '/'});
+      console.log("input!!!!");
+
+      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', token);
+      });
+
+      // 홈 페이지로 리다이렉션합니다.
+      window.location.href = host + '/home';
+    })
+    .fail(function (jqXHR, textStatus) {
+      alert("Login Fail");
+    });
   });
-}
-
-loginButton.addEventListener('click', handlerLogin);

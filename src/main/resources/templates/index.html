@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Task Navigator Main Page</title>
@@ -9,95 +9,27 @@
   <link rel="stylesheet" type="text/css" href="/css/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 </head>
 <body>
   <nav>
     <div class="nav-container">
-      <a href="http://localhost:8080/home">Task Navigator</a>
+      <a href="/home">Task Navigator</a>
     </div>
     <div class="nav-container nav-right">
-      <span id="navUsername">Username</span>
-      <a href="http://localhost:8080/users/login-page">LOG OUT</a>
+      <span id="navUsername" th:text="${test}">Username</span>
+      <a href="/users/login-page">LOG OUT</a>
     </div>
   </nav>
 
-  <a href="http://localhost:8080/home/newBoard" class="create-board">
+  <a href="/newBoard" class="create-board">
     <i class="fa-solid fa-plus"></i>
   </a>
 
-  <div class="board-container">
-    <div class="board-top">
-      <div class="board-intro-container">
-        <h3>Board Title</h3>
-        <p>This is board introduction.</p>
-      </div>
-      <a href="#" class="create-column">
-        <i class="fa-solid fa-plus"></i>
-      </a>
-    </div>
-
-    <div class="column-container">
-      <div class="column" draggable="true">
-        <div class="column-status-container">
-          <span class="column-status">before</span>
-          <input type="text" class="edit-column-input" style="display:none;">
-          <div class="btn-container">
-            <a href="#" class="edit-column">
-              <i class="fa-regular fa-pen-to-square"></i>
-            </a>
-            <a href="#" class="create-card">
-              <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="#" class="remove-column">
-              <i class="fa-solid fa-xmark"></i>
-            </a>
-          </div>
-        </div>
-        <div class="card-container">
-          <a href="http://localhost:8080/home/card" class="card" draggable="true">Card Title</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="board-container">
-    <div class="board-top">
-      <div class="board-intro-container">
-        <h3>Board Title</h3>
-        <p>This is board introduction.</p>
-      </div>
-      <a href="#" class="create-column">
-        <i class="fa-solid fa-plus"></i>
-      </a>
-    </div>
-
-    <div class="column-container">
-      <div class="column" draggable="true">
-        <div class="column-status-container">
-          <input type="text" class="edit-column-input" style="display:none;">
-          <span class="column-status">before</span>
-          <div class="btn-container">
-            <a href="#" class="edit-column">
-              <i class="fa-regular fa-pen-to-square"></i>
-            </a>
-            <a href="#" class="create-card">
-              <i class="fa-solid fa-plus"></i>
-            </a>
-            <a href="#" class="remove-column">
-              <i class="fa-solid fa-xmark"></i>
-            </a>
-          </div>
-        </div>
-        <div class="card-container">
-          <a href="#" class="card" draggable="true">Card Title</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="/js/index.js"></script>
-  <script src="/js/create-board.js"></script>
-  <script src="/js/drag-drop.js"></script>
-
+  <div class="boards-container"></div>
 </body>
+<script src="/js/basic.js"></script>
+<script src="/js/index.js"></script>
 </html>

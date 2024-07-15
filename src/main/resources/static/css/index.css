@@ -30,6 +30,14 @@ body {
   font-size: 35px;
 }
 
+.boards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
 .board-container {
   display: flex;
   flex-direction: column;

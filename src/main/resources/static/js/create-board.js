@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="column" draggable="true">
       <div class="column-status-container">
         <span class="column-status">before</span>
-        <input type="text" class="edit-column-input" style="display:none;">
+        <input type="text" class="edit-column-input hidden" style="display:none;">
         <div class="btn-container">
           <a href="#" class="edit-column">
             <i class="fa-regular fa-pen-to-square"></i>
