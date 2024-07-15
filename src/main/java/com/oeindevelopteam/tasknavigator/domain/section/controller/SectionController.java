@@ -37,6 +37,13 @@ public class SectionController {
         .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 삭제되었습니다.", null));
   }
 
+//  @PutMapping("/{columnId}")
+//  ResponseEntity<CommonResponseDto> updateSection(@PathVariable Long boardId, @PathVariable Long columnId, @RequestBody SectionRequestDto requestDto) {
+//    sectionService.updateSection(boardId, columnId, requestDto);
+//    return ResponseEntity.status(HttpStatus.OK)
+//        .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 수정되었습니다.", null));
+//  }
+
   @PutMapping("/{columnId}")
   ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order, @RequestParam String status) {
     sectionService.moveSection(columnId, order, status);
