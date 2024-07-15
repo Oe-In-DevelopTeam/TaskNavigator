@@ -63,10 +63,11 @@ public class SectionService {
   }
 
   @Transactional
-  public void moveSection(Long columnId, int order) {
+  public void moveSection(Long columnId, int order, String status) {
     Section section = findByIdReturnSection(columnId);
 
     section.updateOrder(order);
+    section.updateStatus(status);
 
     sectionRepository.save(section);
   }

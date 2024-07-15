@@ -39,8 +39,8 @@ public class SectionController {
   }
 
   @PutMapping("/{columnId}")
-  ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order) {
-    sectionService.moveSection(columnId, order);
+  ResponseEntity<CommonResponseDto> moveSection(@PathVariable Long columnId, @RequestParam int order, @RequestParam String status) {
+    sectionService.moveSection(columnId, order, status);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(HttpStatus.OK.value(), "컬럼이 이동되었습니다.", null));
   }

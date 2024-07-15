@@ -9,6 +9,11 @@
   <link rel="stylesheet" type="text/css" href="/css/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // 서버에서 보드 ID를 설정
+    // var boardId = document.currentScript.getAttribute('data-board-id');
+    var boardId = '1'; // TEST 용도
+  </script>
 </head>
 <body>
   <nav>
@@ -25,7 +30,7 @@
     <i class="fa-solid fa-plus"></i>
   </a>
 
-  <div class="board-container">
+  <div class="board-container" data-board-id="{{ boardId }}">
     <div class="board-top">
       <div class="board-intro-container">
         <h3>Board Title</h3>
@@ -60,7 +65,7 @@
     </div>
   </div>
 
-  <div class="board-container">
+  <div class="board-container" data-board-id="{{ boardId }}">
     <div class="board-top">
       <div class="board-intro-container">
         <h3>Board Title</h3>
