@@ -3,6 +3,7 @@ package com.oeindevelopteam.tasknavigator.domain.section.entity;
 import com.oeindevelopteam.tasknavigator.domain.board.entity.Board;
 import com.oeindevelopteam.tasknavigator.domain.card.entity.Card;
 import com.oeindevelopteam.tasknavigator.domain.section.dto.SectionRequestDto;
+import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "sections")
 @NoArgsConstructor
-public class Section {
+public class Section extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

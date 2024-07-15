@@ -30,35 +30,24 @@ public class CardController {
 
   @PostMapping("/boards/{boardId}/columns/{columnId}/cards")
   public ResponseEntity<CommonResponseDto> createCard(@PathVariable Long boardId,
-      @PathVariable Long columnId, @RequestBody CardRequestDto cardRequestDto) {
+      @PathVariable Long columnId, @RequestBody CardRequestDto cardRequestDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
-
-    CardResponseDto responseDto = cardService.createdCard(cardRequestDto, boardId, columnId);
+    CardResponseDto responseDto = cardService.createdCard(cardRequestDto, boardId, columnId,
+        userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 생성에 성공하였습니다.", responseDto));
   }
 
-  @GetMapping("/admin/cards")
-  public ResponseEntity<CommonResponseDto> getAllCards() {
-    List<CardResponseDto> responseDtos = cardService.getAllCards();
-
-    // TODO: Admin인지 아닌지 확인하는 로직 필요
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new CommonResponseDto(200, "전체 카드 조회에 성공하였습니다.", responseDtos));
-  }
-
   @PutMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
   public ResponseEntity<CommonResponseDto> editCardContent(@PathVariable Long boardId,
       @PathVariable Long columnId, @PathVariable Long cardId,
-      @RequestBody CardRequestDto cardRequestDto) {
+      @RequestBody CardRequestDto cardRequestDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
-    CardResponseDto responseDto = cardService.editCardContent(cardRequestDto, cardId);
+    CardResponseDto responseDto = cardService.editCardContent(cardRequestDto, cardId,
+        userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 수정에 성공하였습니다.", responseDto));
@@ -66,12 +55,10 @@ public class CardController {
 
   @DeleteMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
   public ResponseEntity<CommonResponseDto> deleteCard(@PathVariable Long boardId,
-      @PathVariable Long columnId, @PathVariable Long cardId) {
+      @PathVariable Long columnId, @PathVariable Long cardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
-    cardService.deleteCard(cardId);
+    cardService.deleteCard(cardId, userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 삭제에 성공하였습니다.", null));
@@ -79,10 +66,11 @@ public class CardController {
 
   @GetMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}")
   public ResponseEntity<CommonResponseDto> getCardDetail(@PathVariable Long boardId,
-      @PathVariable Long columnId, @PathVariable Long cardId) {
+      @PathVariable Long columnId, @PathVariable Long cardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
     // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    CardResponseDto responseDto = cardService.getCardDetail(cardId);
+    CardResponseDto responseDto = cardService.getCardDetail(cardId, userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 조회에 성공하였습니다.", responseDto));
@@ -91,12 +79,11 @@ public class CardController {
   @PutMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}/tags")
   public ResponseEntity<CommonResponseDto> editCardTags(@PathVariable Long boardId,
       @PathVariable Long columnId, @PathVariable Long cardId,
-      @RequestBody CardTagEditRequestDto cardTagEditRequestDto) {
-    // TODO: 본인이 포함되어 있는 보드인지 확인 필요
-    // TODO: 본인이 작성한 카드인지 확인 필요
-    // TODO: ADMIN은 상관없이 통과
+      @RequestBody CardTagEditRequestDto cardTagEditRequestDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    CardResponseDto responseDto = cardService.editCardTags(cardId, cardTagEditRequestDto);
+    CardResponseDto responseDto = cardService.editCardTags(cardId, cardTagEditRequestDto,
+        userDetails.getUser());
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 태그 변경에 성공하였습니다.", responseDto));
@@ -127,6 +114,4 @@ public class CardController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "카드 조회에 성공하였습니다.", responseDtos));
   }
-
-
 }

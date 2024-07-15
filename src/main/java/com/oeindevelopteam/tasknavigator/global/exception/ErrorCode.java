@@ -25,7 +25,10 @@ public enum ErrorCode {
   MULTIPLE_PARAMETERS_NOT_ALLOWED(400, "여러 파라미터가 허용되지 않습니다."),
   EXPIRED_TOKEN(400, "만료된 토큰 입니다."),
   INVALID_TOKEN(400, "유효하지 않은 토큰 입니다."),
-  INVITATION_NOT_ALLOWED(400, "자신을 초대할 수 없습니다."),;
+  INVITATION_NOT_ALLOWED(400, "자신을 초대할 수 없습니다."),
+  NOT_INVITED_USER(400, "해당 보드에 초대받지 못한 유저입니다."),
+  TAG_NOT_FOUND(400, "없는 태그입니다."),
+  CARD_ACCESS_DENIED(400, "해당 카드에 대한 권한이 없습니다."), COMMENT_NOT_FOUND(400, "댓글을 찾을 수 없습니다.");
 
   private int status;
   private String message;

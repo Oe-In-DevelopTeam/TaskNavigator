@@ -1,6 +1,7 @@
 package com.oeindevelopteam.tasknavigator.domain.card.entity;
 
 import com.oeindevelopteam.tasknavigator.domain.card.dto.CardRequestDto;
+import com.oeindevelopteam.tasknavigator.domain.comment.entity.Comment;
 import com.oeindevelopteam.tasknavigator.domain.section.entity.Section;
 import com.oeindevelopteam.tasknavigator.global.entity.Timestamped;
 import jakarta.persistence.CascadeType;
@@ -50,6 +51,9 @@ public class Card extends Timestamped {
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<CardTagMatches> tagMatches;
 
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Comment> comments;
+
   @ManyToOne
   @JoinColumn(name = "section_id")
   private Section section;
@@ -96,5 +100,9 @@ public class Card extends Timestamped {
 
   public void removeCardTag(CardTagMatches cardTagMatches) {
     this.tagMatches.remove(cardTagMatches);
+  }
+
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
   }
 }

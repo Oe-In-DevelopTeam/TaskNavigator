@@ -101,7 +101,7 @@ body {
   gap: 10px;
 }
 
-.btn-container .create-card, .btn-container .remove-column {
+.btn-container .create-card, .btn-container .remove-column, .btn-container .edit-column {
   opacity: 0.5;
   transition: all ease-in 0.5s;
 }
@@ -110,12 +110,16 @@ body {
   opacity: 1;
 }
 
-.column-status-container > input {
-  font-family: "Roboto Mono", monospace;
-}
-
 .btn-container .remove-column:hover {
   opacity: 1;
+}
+
+.btn-container .edit-column:hover {
+  opacity: 1;
+}
+
+.column-status-container > input {
+  font-family: "Roboto Mono", monospace;
 }
 
 .card-container {
