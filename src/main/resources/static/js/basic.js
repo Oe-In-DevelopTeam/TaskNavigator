@@ -47,13 +47,6 @@ $(document).ready(function () {
       }
     }).done(function (res, status, xhr) {
 
-      console.log(res.data);
-      console.log(res.data[0].boardName);
-      console.log(res.data[0].info);
-      console.log(res.data[0].length);
-      console.log(res.data[0].sections.length);
-
-
       for (let i = 0; i < res.data.length; i++) {
         let boardTemplate = `
       <div class="board-container">
@@ -72,12 +65,11 @@ $(document).ready(function () {
   </div>
   `;
 
+        let boardId = res.data[i].boardId;
         boardsContainer.insertAdjacentHTML('beforeend', boardTemplate);
 
         const currentBoard = boardsContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
         const columnContainer = currentBoard.querySelector('.column-container');
-
-        console.log(columnContainer);
 
         for (let j = 0; j < res.data[i].sections.length; j++) {
           let columnTemplate = `
@@ -101,14 +93,16 @@ $(document).ready(function () {
       </div>
         `;
 
+          let columnId = res.data[i].sections[j].sectionId;
           columnContainer.insertAdjacentHTML('beforeend', columnTemplate);
 
           const currentColumn= columnContainer.lastElementChild; // 마지막으로 추가된 board-container 요소 가져오기
           const cardContainer= currentColumn.querySelector('.card-container');
 
           for (let k = 0; k < res.data[i].sections[j].cards.length; k++) {
+            let cardId = res.data[i].sections[j].cards[k].cardId;
             let cardTemplate = `
-            <a href="#" class="card" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
+            <a href="/boards/${boardId}/columns/${columnId}/cards/${cardId}" class="card" draggable="true">${res.data[i].sections[j].cards[k].title}</a>
             `;
 
             cardContainer.insertAdjacentHTML('beforeend', cardTemplate);

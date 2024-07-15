@@ -9,12 +9,14 @@ import lombok.Setter;
 @Setter
 public class CardDto {
 
+    private Long cardId;
     private String title;
     private String content;
     private String dueDate;
     private String manager;
 
-    public CardDto(String title, String content, String dueDate, String manager) {
+    public CardDto(Long cardId, String title, String content, String dueDate, String manager) {
+        this.cardId = cardId;
         this.title = title;
         this.content = content;
         this.dueDate = dueDate;
