@@ -5,10 +5,12 @@ import com.oeindevelopteam.tasknavigator.domain.comment.dto.CommentResponseDto;
 import com.oeindevelopteam.tasknavigator.domain.comment.service.CommentService;
 import com.oeindevelopteam.tasknavigator.domain.user.security.UserDetailsImpl;
 import com.oeindevelopteam.tasknavigator.global.dto.CommonResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,5 +36,16 @@ public class CommentController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(new CommonResponseDto(200, "댓글 작성에 성공하였습니다.", commentResponseDto));
   }
+
+  @GetMapping("cards/{cardId}/comments")
+  public ResponseEntity<CommonResponseDto> getComments(
+      @PathVariable Long cardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    List<CommentResponseDto> commentResponseDtos = commentService.getComments(cardId,
+        userDetails.getUser());
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CommonResponseDto(200, "댓글 조회에 성공하였습니다.", commentResponseDtos));
+  }
+
 
 }
