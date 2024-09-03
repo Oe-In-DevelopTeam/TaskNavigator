@@ -58,7 +58,7 @@
 
 &nbsp;
 &nbsp;
-## 📊 ERD DIAGRAM
+## 📊 ER DIAGRAM
 
 ![image](https://github.com/user-attachments/assets/b00dc972-69c1-4a61-b355-039601b105a2)
 
